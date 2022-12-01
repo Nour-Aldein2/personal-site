@@ -137,16 +137,6 @@ def load_data(path:str):
 
     return df
 
-@st.experimental_singleton
-def load_model(path):
-    return tf.keras.models.load_model(path, custom_objects={'KerasLayer':hub.KerasLayer})
-
-@st.cache(allow_output_mutation=True)
-def make_prediction(model, inputs):
-    return model.predict(inputs)
-
-model = load_model("explain_BERT_predictions/bert.h5")
-
 ####################################################################
 with header:
     st.title("Explaing BERT Predictions with LIME")
@@ -224,77 +214,3 @@ with plots:
         
     st.plotly_chart(px.bar(target, 
                     labels={"index": "Phrase", "value": "Count"}).update_layout(showlegend=False))
-
-
-
-
-
-module_url = "https://tfhub.dev/tensorflow/bert_en_uncased_L-24_H-1024_A-16/4"
-bert_layer = hub.KerasLayer(module_url, trainable=True)
-
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
-X_train, X_val, y_train, y_val = train_test_split(
-    df_train.text.values,
-    df_train.target.values,
-    test_size=0.2,
-    random_state=101
-)
-
-# Prepare a tokenizer
-vocab_file = bert_layer.resolved_object.vocab_file.asset_path.numpy()
-do_lower_case = bert_layer.resolved_object.do_lower_case.numpy()
-tokenizer = tokenization.FullTokenizer(vocab_file, do_lower_case)
-
-# Encode the data
-train_input = bert_encode(texts=X_train,
-                         tokenizer=tokenizer,
-                         max_len=160)
-train_labels = y_train
-
-val_input = bert_encode(texts=X_val,
-                       tokenizer=tokenizer,
-                       max_len=160)
-val_labels = y_val
-
-test_input = bert_encode(texts=df_test.text.values,
-                        tokenizer=tokenizer,
-                        max_len=160)
-
-# Create a list of class names
-class_names = ["disaster", "not_disaster"]
-
-# Get predictions probabilities of validation data
-pred_probs = make_prediction(model, val_input)
-# Get preditions from probabilities
-# preds = tf.squeeze(tf.round(pred_probs))
-preds = tf.argmax(pred_probs, axis=1).numpy()
-
-
-st.write(f"The model's accuracy score is: {accuracy_score(y_val, preds)*100:.2f}%")
-st.write("Classification Report:")
-st.write(classification_report(y_val, preds))
-
-cm_df = pd.DataFrame(data=confusion_matrix(y_true=val_labels, y_pred=preds),
-            columns=class_names,
-            index=class_names
-                    )
-
-fig = px.imshow(cm_df, 
-                text_auto=True,
-                color_continuous_scale=px.colors.sequential.Blues)
-fig.update_layout(autosize=False,
-                  width=400, 
-                  height=400,
-                  xaxis=dict(tickfont=dict(size=10), tickmode="linear"),
-                  yaxis=dict(tickfont=dict(size=10), tickmode="linear"),
-                  title="Tweets Classification Confusion Matrix"
-                  )
-fig.update_traces(hovertemplate="<br>".join([
-                    "Predicted label: %{x}",
-                    "True label: %{y}",
-                    "Preds count: %{z}"
-                    ])
-                 )
-
-st.plotly_chart(fig)
