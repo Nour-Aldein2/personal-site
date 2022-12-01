@@ -9,7 +9,7 @@ import plotly.express as px
 import re
 import string
 import nltk
-# nltk.download()
+nltk.download("stopwords")
 from nltk.corpus import stopwords
 import tokenization
 
