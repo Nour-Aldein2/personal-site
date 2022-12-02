@@ -146,10 +146,12 @@ with header:
 ####################################################################
 with dataset:
     st.header("Tweets Classification")
-    
-    
-    df_test = load_data(r".\\nlp-getting-started\\test.csv")
-    df_train = load_data(r".\\nlp-getting-started\\train.csv")
+    try:
+        df = pd.read_csv("train.csv")
+        st.write(df)
+
+    df_test = load_data(r"/nlp-getting-started/test.csv")
+    df_train = load_data(r"/nlp-getting-started/train.csv")
     
 
     if st.checkbox("Show training data:"):
