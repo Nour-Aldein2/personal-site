@@ -146,9 +146,11 @@ with header:
 ####################################################################
 with dataset:
     st.header("Tweets Classification")
-
-    df_train = load_data("personal-site/explain_BERT_predictions/train.csv")
-    df_test = load_data("personal-site/explain_BERT_predictions/test.csv")
+    
+    
+    df_test = load_data("./nlp-getting-started/test.csv")
+    df_train = load_data("./nlp-getting-started/train.csv")
+    
 
     if st.checkbox("Show training data:"):
         data_load_state = st.text('Loading data...')
