@@ -9,8 +9,8 @@ import plotly.express as px
 import re
 import string
 import nltk
-nltk.download("stopwords")
-from nltk.corpus import stopwords
+# nltk.download("stopwords")
+# from nltk.corpus import stopwords
 import tokenization
 
 
@@ -22,7 +22,7 @@ plots = st.container()
 model_training = st.container()
 
 ## Early variable and calculations
-stop_words = set(stopwords.words("english"))
+# stop_words = set(stopwords.words("english"))
 punctuations = string.punctuation
 url_pattern = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
 hashtag_pattern = r"(?i)\B((\#[a-zA-Z]+))"
@@ -126,8 +126,8 @@ def load_data(path:str):
     df["unique_word_count"] = df["unique_words"].apply(lambda x: len(x))
     df["mean_word_length"] = df["words_list"].apply(lambda x: np.mean([len(i) for i in x]))
     # Text patterns
-    df["stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word in stop_words]))
-    df["non_stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word not in stop_words]))
+#     df["stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word in stop_words]))
+#     df["non_stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word not in stop_words]))
     df["urls"] = df["text"].apply(lambda x: find_specific_word(url_pattern, x))
     df["url_count"] = df["urls"].apply(lambda x: len(x))
     df["hashtags"] = df["text"].apply(lambda x: find_specific_word(hashtag_pattern, x))
