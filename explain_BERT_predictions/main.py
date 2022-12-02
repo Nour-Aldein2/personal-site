@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import tensorflow as tf
-import tensorflow_hub as hub
+# import tensorflow as tf
+# import tensorflow_hub as hub
 from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import pandas as pd
@@ -11,7 +11,7 @@ import string
 import nltk
 # nltk.download("stopwords")
 # from nltk.corpus import stopwords
-import tokenization
+# import tokenization
 
 
 st.set_page_config(layout="wide")
