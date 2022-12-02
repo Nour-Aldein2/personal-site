@@ -146,7 +146,50 @@ with header:
 ####################################################################
 with dataset:
     st.header("Tweets Classification")
+    
+    try:
+        st.write('Trying with back slashes')
+        st.dataframe(pd.read_csv(r'.\\test.csv'))
+    except:
+        st.write('It didn\'t work with back slashes.')
 
+
+    try:
+        st.write('Trying with forward slashes')
+        st.dataframe(pd.read_csv(r'./test.csv'))
+    except:
+        st.write('It didn\'t work with forward slashes.')
+        
+    
+
+    try:
+        st.write('Trying with back slashes')
+        st.dataframe(pd.read_csv(r'.\\personal-site\\explain_BERT_predictions\\test.csv'))
+    except:
+        st.write('1It didn\'t work with back slashes.')
+
+
+    try:
+        st.write('Trying with forward slashes')
+        st.dataframe(pd.read_csv(r'./personal-site/explain_BERT_predictions/test.csv'))
+    except:
+        st.write('2It didn\'t work with forward slashes.')
+        
+
+    try:
+        st.write('Trying with back slashes')
+        st.dataframe(pd.read_csv(r'test.csv'))
+    except:
+        st.write('3It didn\'t work with back slashes.')
+
+
+    try:
+        st.write('Trying with forward slashes')
+        st.dataframe(pd.read_csv(r'/test.csv'))
+    except:
+        st.write('4It didn\'t work with forward slashes.')
+        
+        
     df_test = load_data(r"/nlp-getting-started/test.csv")
     df_train = load_data(r"/nlp-getting-started/train.csv")
     
