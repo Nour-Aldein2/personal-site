@@ -35,74 +35,63 @@ app.layout = html.Div(children={
         }
     ),
 
-    html.H2("Overview"),
-    dcc.Markdown(children=markdown_text),
-    dcc.Dropdown(
-        df_test.select_dtypes(include=np.number).columns[1:],  # Don't include ID
-        "char_count",
-        id="feature-selector"
-    ),
+    # html.H2("Overview"),
+    # dcc.Markdown(children=markdown_text),
+    # dcc.Dropdown(
+    #     df_test.select_dtypes(include=np.number).columns[1:],  # Don't include ID
+    #     "char_count",
+    #     id="feature-selector"
+    # ),
 
-    # ----------------------- Training Data
-    html.Div([
-        dbc.Row([
-            dbc.Col(
-                dbc.Container(
-                    dbc.Card(
-                        html.Div(
-                            dbc.Table.from_dataframe(
-                                df_train[["id", "text", "target"]]),
-                            style={"maxHeight": "450px", "overflow": "scroll"},
-                        ),
-                        body=True,
-                    ),
-                    className="p-5",
-                ), width={"size": 6, "order": "first"}
-            ),
-            dbc.Col(
-                html.Div([
-                    dcc.Graph(id="train-hist")
-                ]), width={"size": 6, "order": "last"},
-            )
-        ]),
-    ],
-    ),
+    # # ----------------------- Training Data
+    # html.Div([
+    #     dbc.Row([
+    #         dbc.Col(
+    #             dbc.Container(
+    #                 dbc.Card(
+    #                     html.Div(
+    #                         dbc.Table.from_dataframe(
+    #                             df_train[["id", "text", "target"]]),
+    #                         style={"maxHeight": "450px", "overflow": "scroll"},
+    #                     ),
+    #                     body=True,
+    #                 ),
+    #                 className="p-5",
+    #             ), width={"size": 6, "order": "first"}
+    #         ),
+    #         dbc.Col(
+    #             html.Div([
+    #                 dcc.Graph(id="train-hist")
+    #             ]), width={"size": 6, "order": "last"},
+    #         )
+    #     ]),
+    # ],
+    # ),
 
-    # ----------------------- Testing Data
-    html.Div([
-        dbc.Row([
-            dbc.Col(
-                dbc.Container(
-                    dbc.Card(
-                        html.Div(
-                            dbc.Table.from_dataframe(df_test[["id", "text"]]),
-                            style={"maxHeight": "450px", "overflow": "scroll"},
-                        ),
-                        body=True,
-                    ),
-                    className="p-5",
-                ), width={"size": 6, "order": "first"}
-            ),
-            dbc.Col(
-                html.Div([
-                    dcc.Graph(id="test-hist")
-                ]), width={"size": 6, "order": "last"},
-            )
-        ]),
-    ],
-    ),
+    # # ----------------------- Testing Data
+    # html.Div([
+    #     dbc.Row([
+    #         dbc.Col(
+    #             dbc.Container(
+    #                 dbc.Card(
+    #                     html.Div(
+    #                         dbc.Table.from_dataframe(df_test[["id", "text"]]),
+    #                         style={"maxHeight": "450px", "overflow": "scroll"},
+    #                     ),
+    #                     body=True,
+    #                 ),
+    #                 className="p-5",
+    #             ), width={"size": 6, "order": "first"}
+    #         ),
+    #         dbc.Col(
+    #             html.Div([
+    #                 dcc.Graph(id="test-hist")
+    #             ]), width={"size": 6, "order": "last"},
+    #         )
+    #     ]),
+    # ],
+    # ),
 
-    html.Div([
-        # html.Button('Show N-Gram', id='show-n-gram', n_clicks=1),
-        # dcc.Graph(id="target-0-n-gram")
-    ]),
-    #     if n_gram_lower > n_gram_upper:
-    #         components.html("""
-    #         <p style='color:red'>
-    #         The Upper Boundary should NOT be less than the lower limit. Setting it to be equal to the Lower Boundary.
-    #         </p>
-    #         """)
-    #         n_gram_upper = n_gram_lower
 
     # Input your text
     html.Div([
@@ -112,40 +101,28 @@ app.layout = html.Div(children={
 }, style={"padding": "5%"})
 
 
-@app.callback(
-    Output(component_id='train-hist', component_property='figure'),
-    Input(component_id='feature-selector', component_property='value')
-)
-def update_figure(feature):
-    fig_train = px.histogram(df_train, x=feature, marginal="box",
-                             color_discrete_sequence=['turquoise'])
-    fig_train.update_layout(height=600)
-    return fig_train
+# @app.callback(
+# #     Output(component_id='train-hist', component_property='figure'),
+# #     Input(component_id='feature-selector', component_property='value')
+# # )
+# # def update_figure(feature):
+# #     fig_train = px.histogram(df_train, x=feature, marginal="box",
+# #                              color_discrete_sequence=['turquoise'])
+# #     fig_train.update_layout(height=600)
+# #     return fig_train
 
 
-@app.callback(
-    Output(component_id='test-hist', component_property='figure'),
-    Input(component_id='feature-selector', component_property='value')
-)
-def update_figure(feature):
-    fig_test = px.histogram(df_test, x=feature, marginal="box",
-                            color_discrete_sequence=['indianred'])
-    fig_test.update_layout(height=600)
-    return fig_test
+# # @app.callback(
+# #     Output(component_id='test-hist', component_property='figure'),
+# #     Input(component_id='feature-selector', component_property='value')
+# # )
+# # def update_figure(feature):
+# #     fig_test = px.histogram(df_test, x=feature, marginal="box",
+# #                             color_discrete_sequence=['indianred'])
+# #     fig_test.update_layout(height=600)
+# #     return fig_test
 
 
-@app.callback(
-    Output(component_id='target-0-n-gram', component_property='figure'),
-    Input(component_id='show-n-gram', component_property='n_clicks')
-)
-def create_n_gram(n_clicks):
-    target_0_top_count, target_1_top_count = text_processing.get_top_count_vectorizer(df_train,
-                                                                                      df_train["text"],
-                                                                                      (2, 2), 5)
-    target = target_0_top_count
-    fig = px.bar(target, labels={"index": "Phrase", "value": "Count"}).update_layout(showlegend=False)
-
-    return fig
 
 
 if __name__ == "__main__":
