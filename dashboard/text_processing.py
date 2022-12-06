@@ -15,6 +15,24 @@ mention_pattern = r"(?i)\B((\@[a-zA-Z]+))"
 
 ## Processing functions
 
+def find_specific_word(pattern, string):
+    """
+    A function that uses RegEx to find words (strings) that matches a specific pattern.
+
+    Args:
+      pattern: a raw string that has the pattern we are looking for.
+      string: the string we want to check if it has the pattern.
+      
+    Returns:
+      A list of strings that matches the pattern of interest.
+    """
+    words = re.findall(pattern=pattern, string=string)
+
+    return [x[0] for x in words]
+
+
+
+
 def load_and_process_data(path: str):
     """
     Takes a path to a CSV file and preprocess the text data in it.
@@ -42,30 +60,17 @@ def load_and_process_data(path: str):
     # Text patterns
     #     df["stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word in stop_words]))
     #     df["non_stop_words_count"] = df["words_list"].apply(lambda x: len([word for word in x if word not in stop_words]))
-    df["urls"] = df["text"].apply(lambda x: find_specific_word(url_pattern, x))
-    df["url_count"] = df["urls"].apply(lambda x: len(x))
-    df["hashtags"] = df["text"].apply(lambda x: find_specific_word(hashtag_pattern, x))
-    df["hashtag_count"] = df["hashtags"].apply(lambda x: len(x))
-    df["mentions"] = df["text"].apply(lambda x: find_specific_word(mention_pattern, x))
-    df["mention_count"] = df["mentions"].apply(lambda x: len(x))
+    # df["urls"] = df["text"].apply(lambda x: find_specific_word(url_pattern, x))
+    # df["url_count"] = df["urls"].apply(lambda x: len(x))
+    # df["hashtags"] = df["text"].apply(lambda x: find_specific_word(hashtag_pattern, x))
+    # df["hashtag_count"] = df["hashtags"].apply(lambda x: len(x))
+    # df["mentions"] = df["text"].apply(lambda x: find_specific_word(mention_pattern, x))
+    # df["mention_count"] = df["mentions"].apply(lambda x: len(x))
 
     return df
 
 
-def find_specific_word(pattern, string):
-    """
-    A function that uses RegEx to find words (strings) that matches a specific pattern.
 
-    Args:
-      pattern: a raw string that has the pattern we are looking for.
-      string: the string we want to check if it has the pattern.
-      
-    Returns:
-      A list of strings that matches the pattern of interest.
-    """
-    words = re.findall(pattern=pattern, string=string)
-
-    return [x[0] for x in words]
 
 
 def get_top_count_vectorizer(df, sentence_list, ngram, n):
