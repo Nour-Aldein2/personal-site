@@ -76,8 +76,41 @@ app.layout = dbc.Container([
             ]), width={"size": 6, "order": "last"},
         )
     ]),
+    # ----------------------- N-Gram
+    dbc.Row([
+        dbc.Col([
+            ## TODO: Add description of n-grams
+            html.H6(["Number of Phrases:"], style={'padding': '0 3%'}),
+            dcc.Slider(3, 20, 1,
+                       value=5,
+                       id="phrases-num"),
+            dbc.Row([
+                dbc.Col([
+                    html.H6(["Lower Boundary:"], style={'padding': '0 7%'}),
+                    dcc.Slider(1, 5, 1,
+                               value=1,
+                               id="lower-bound"),
+                ]),
+                dbc.Col([
+                    html.H6(["Upper Boundary:"], style={'padding': '0 7%'}),
+                    dcc.Slider(1, 3, 1,
+                               value=1,
+                               id="upper-bound")
+                ]),
+            ], style={'padding': '1% 0'})
+        ]),
+        dbc.Col(
+            dcc.Graph(id="n-gram")
+        )
+    ]),
+
+    dbc.Row([
+        dbc.Button('Train a Model', id='submit-val', n_clicks=0, color="primary", className="me-1"),
+    ], style={'padding': '2%'}),
 ], className="m-5", style={'backgroundColor': 'var(--bs-light)', })
 
+
+# Dataframes
 @app.callback(
     Output(component_id='train-hist', component_property='figure'),
     Input(component_id='feature-selector', component_property='value')
@@ -98,6 +131,26 @@ def update_figure(feature):
                             color_discrete_sequence=['indianred'])
     fig_test.update_layout(height=600)
     return fig_test
+
+
+# N-Gram
+@app.callback(
+    Output(component_id='n-gram', component_property='figure'),
+    [Input(component_id='phrases-num', component_property='value'),
+     Input(component_id='lower-bound', component_property='value'),
+     Input(component_id='upper-bound', component_property='value')]
+)
+def create_n_gram(phrases_num, lower, upper):
+    target_0_top_count, target_1_top_count = text_processing.get_top_count_vectorizer(df_train,
+                                                                                      df_train["text"],
+                                                                                      ngram=(lower, upper),
+                                                                                      n=phrases_num)
+    ## TODO: Create a radio button to choose the class
+    fig = px.bar(target_0_top_count,
+                 labels={"index": "Phrase", "value": "Count"})
+    fig.update_layout(showlegend=False)
+    return fig
+
 
 
 app.run(debug=True)
