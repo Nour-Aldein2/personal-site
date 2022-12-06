@@ -118,7 +118,7 @@ app.layout = dbc.Container([
 def update_figure(feature):
     fig_train = px.histogram(df_train, x=feature, marginal="box",
                              color_discrete_sequence=['turquoise'])
-    fig_train.update_layout(height=600)
+    fig_train.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
     return fig_train
 
 
@@ -129,7 +129,7 @@ def update_figure(feature):
 def update_figure(feature):
     fig_test = px.histogram(df_test, x=feature, marginal="box",
                             color_discrete_sequence=['indianred'])
-    fig_test.update_layout(height=600)
+    fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
     return fig_test
 
 
@@ -148,7 +148,7 @@ def create_n_gram(phrases_num, lower, upper):
     ## TODO: Create a radio button to choose the class
     fig = px.bar(target_0_top_count,
                  labels={"index": "Phrase", "value": "Count"})
-    fig.update_layout(showlegend=False)
+    fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
     return fig
 
 
