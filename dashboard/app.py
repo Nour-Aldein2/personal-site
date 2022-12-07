@@ -2,7 +2,6 @@ import dash
 from dash import html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
-import pandas as pd
 import numpy as np
 
 import plotly.express as px
@@ -41,6 +40,9 @@ app.layout = dbc.Container([
             id="feature-selector"
         ),
     ]),
+    ## TODO: Add functionality to retrieve the data if there is an interesting point
+    ## TODO: Make the histograms visually more appealing
+    ## TODO: Add titles for each section of the dashboard (training, test, n-gram)
     # ----------------------- Training Data
     dbc.Row([
         dbc.Col(
@@ -79,7 +81,26 @@ app.layout = dbc.Container([
     # ----------------------- N-Gram
     dbc.Row([
         dbc.Col([
-            ## TODO: Add description of n-grams
+            dcc.Markdown('''
+                N-Gram takes sequence data (one word or more) as input, it then creates probablitiy distrubution of \
+                the all the possible items, and then make a prediction based on the likelihood of each item. \
+                In addiction to next-word prediction, N-Grams have other applications, such as language identification, \
+                information retrieval, and predictions in DNA sequencing.\
+                [[1]](https://deepai.org/machine-learning-glossary-and-terms/n-gram)
+            ''', style={'padding': '0 3%', 'textAlign': 'justify'}),
+            html.H6(["Choose The Class:"], style={'padding': '0 3%'}),
+            dbc.RadioItems(
+                options=[
+                    {"label": "Disaster", "value": 1},
+                    {"label": "Not Disaster", "value": 0},
+                    # {"label": "Disabled Option", "value": 3, "disabled": True},
+                ],
+                value=1,
+                id="n-gram-class",
+                switch=True,
+                inline=True,
+                style={'padding': '0 3%'}
+            ),
             html.H6(["Number of Phrases:"], style={'padding': '0 3%'}),
             dcc.Slider(3, 20, 1,
                        value=5,
@@ -138,15 +159,16 @@ def update_figure(feature):
     Output(component_id='n-gram', component_property='figure'),
     [Input(component_id='phrases-num', component_property='value'),
      Input(component_id='lower-bound', component_property='value'),
-     Input(component_id='upper-bound', component_property='value')]
+     Input(component_id='upper-bound', component_property='value'),
+     Input(component_id='n-gram-class', component_property='value')]
 )
-def create_n_gram(phrases_num, lower, upper):
-    target_0_top_count, target_1_top_count = text_processing.get_top_count_vectorizer(df_train,
-                                                                                      df_train["text"],
-                                                                                      ngram=(lower, upper),
-                                                                                      n=phrases_num)
-    ## TODO: Create a radio button to choose the class
-    fig = px.bar(target_0_top_count,
+def create_n_gram(phrases_num, lower, upper, class_name):
+    target = text_processing.get_top_count_vectorizer(df_train,
+                                                      df_train["text"],
+                                                      ngram=(lower, upper),
+                                                      n=phrases_num) # target_0, target_1
+    ## TODO: Fix condition for if the upper bound is larger the lower bound
+    fig = px.bar(target[class_name],
                  labels={"index": "Phrase", "value": "Count"})
     fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
     return fig
