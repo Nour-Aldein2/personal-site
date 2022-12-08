@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    background-image: linear-gradient(to right, #2A5470, #4C4177);
+}
+
+.main-container {
+    box-shadow: 10px 10px 5px #54702A, -1em -0.1em .99em #70462A;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}

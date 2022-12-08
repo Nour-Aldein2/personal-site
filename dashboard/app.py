@@ -1,21 +1,25 @@
 import dash
+import pandas as pd
 from dash import html, dcc, Input, Output, State
+from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_addons as tfa
 from tensorflow.keras import layers
-from tensorflow.keras.layers.experimental import preprocessing
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
 import plotly.express as px
 from plotly.io.json import to_json_plotly
 
 import text_processing
 import visualizations as vis
+import json
 
 markdown_text = '''
 ### Dash and Markdown
@@ -28,17 +32,18 @@ if this is your first introduction to Markdown!
 '''
 
 # Python
-print("Start app!")
+# print("Start app!")
 df_train = text_processing.load_and_process_data("train.csv")
-print("Got train data")
+# print("Got train data")
 df_test = text_processing.load_and_process_data("test.csv")
-print("Got test data")
+# print("Got test data")
+class_names = ["not_disaster", "disaster"]
 
 BS = "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-app = dash.Dash(external_stylesheets=[BS])
-print("created the app")
+app = dash.Dash(external_stylesheets=["assets/typography.css", BS])
+# print("created the app")
 
-app.layout = dbc.Container([
+app.layout = html.Div([dbc.Container([
     dbc.Row([
         dbc.Col(html.H1("Explaining USE with LIME"), width=12)
     ]),
@@ -133,21 +138,63 @@ app.layout = dbc.Container([
             dcc.Graph(id="n-gram")
         )
     ]),
-
+    # ----------------------- Model
     dbc.Row([
-        dbc.Button(['Train USE Model',
+        dmc.Button(['Train USE Model',
                     # dbc.Spinner(size='sm', color="danger", type="grow"), " Training..."
-                    dcc.Store(data=[], id="model", storage_type='local')],
+                   dcc.Store(data=[], id="model", storage_type='local')],
                    id='train_model',
                    n_clicks=0,
-                   color="primary",
-                   className="me-1"
+                   disabled=False,
+                   # color="primary",
+                   # outline=True,
+                   variant="gradient",
+                   radius="xl",
+                   gradient={"from": "teal", "to": "lime", "deg": 105}
                    ),
     ], style={'padding': '2%'}),
-    # dbc.Row([
-    #     dbc.Spinner([html.Div(id='training-in-progress')], color="danger", type="grow")
-    # ], style={'padding': '2%'})
-], className=["pt-5", "p-5"], style={'backgroundColor': 'var(--bs-light)', })
+    ## TODO: Create a button to make predictions
+    # ----------------------- Model Predictions
+    ## TODO: Add hover over this button to give the info that it predicts for the training data
+    dbc.Row([
+        dmc.Button(['Make Predictions',
+                   dcc.Store(data=[], id="predictions", storage_type='local')],
+                   id='predict',
+                   n_clicks=0,
+                   disabled=False,
+                   variant="gradient",
+                   radius="xl",
+                   gradient={"from": "teal", "to": "blue", "deg": 60},
+                   ),
+    ], id='make-prediction', style={'padding': '2%', 'display': 'none'}),
+    # ----------------------- Understand Model
+    dbc.Row([
+        dmc.Chips(
+            id='analyze-model',
+            data=[
+                {'value': 'history_df', 'label': 'History'},
+                {'value': 'loss_graph', 'label': 'Loss Graph'},
+                {'value': 'accuracy_graph', 'label': 'Accuracy Graph'},
+                {'value': 'conf-mat', 'label': "Confusion Matrix"}
+            ],
+            value=None,
+            variant='filled',
+            spacing='xl',
+            size='lg',
+            radius='xl',
+            color='green'
+        )
+    ], id='understand-model', style={'padding': '2%', 'display': 'none'}),
+
+    html.Div(id='display-training-results')
+    ## TODO: Choose a random sample of the val_data, make prediction, then explain that prediction
+    ## TODO: Let the user enter a text, make prediction, then explain it
+], className=["pt-5", "p-5", "main-container"], style={'backgroundColor': 'var(--bs-light)', })
+])
+
+# ==========================================
+# ==============================
+# ===================
 
 
 # Dataframes
@@ -157,7 +204,7 @@ app.layout = dbc.Container([
 )
 def update_figure(feature):
     fig_train = px.histogram(df_train, x=feature, marginal="box",
-                             color_discrete_sequence=['turquoise'])
+                             color_discrete_sequence=['#417767'])
     fig_train.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
     return fig_train
 
@@ -168,9 +215,10 @@ def update_figure(feature):
 )
 def update_figure(feature):
     fig_test = px.histogram(df_test, x=feature, marginal="box",
-                            color_discrete_sequence=['indianred'])
+                            color_discrete_sequence=['#774151'])
     fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
     return fig_test
+
 
 
 # N-Gram
@@ -188,8 +236,11 @@ def create_n_gram(phrases_num, lower, upper, class_name):
                                                       n=phrases_num) # target_0, target_1
     ## TODO: Fix condition for if the upper bound is larger the lower bound
     fig = px.bar(target[class_name],
-                 labels={"index": "Phrase", "value": "Count"})
+                 labels={"index": "Phrase", "value": "Count"},
+                 orientation='h',
+                 color_discrete_sequence=['#2A5470'])
     fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
+    fig['layout']['yaxis']['autorange'] = "reversed"
     if class_name == 0:
         fig.update_layout(title="Class 0: Not a Disaster", title_font_color="green", title_x=0.5)
     else:
@@ -207,8 +258,16 @@ def prepare_data(df_train, df_test):
     return train_sentences, val_sentences, train_labels, val_labels
 
 @app.callback(
-    Output(component_id='model', component_property='data'),
-    Input(component_id='train_model', component_property='n_clicks')
+    [
+        Output(component_id='model', component_property='data'),
+        Output(component_id='train_model', component_property='disabled'),
+        Output(component_id='train_model', component_property='children'),
+        Output(component_id='train_model', component_property='variant'),
+        Output(component_id='make-prediction', component_property='style')
+     ],
+    Input(component_id='train_model', component_property='n_clicks'),
+    prevent_initial_call=True
+
 )
 def create_model(n_clicks):
     # Callbacks
@@ -244,9 +303,84 @@ def create_model(n_clicks):
                           epochs=30,
                           validation_data=(val_sentences, val_labels),
                           callbacks=[early_stop])
+        print(history.history)
+        return [model.to_json(), history.history], True, "Done!", 'outline', {'display': 'block'}
 
-    return model.to_json()
 
+# Make Predictions
+@app.callback(
+    [
+        Output(component_id='predictions', component_property='data'),
+        Output(component_id='understand-model', component_property='style')
+    ],
+    [
+        Input(component_id='predict', component_property='n_clicks'),
+        Input(component_id='model', component_property='data')
+    ],
+    prevent_initial_call=True
+)
+def make_prediction(n_clicks, model_data):
+    if n_clicks > 0:
+        train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
+        model = tf.keras.models.model_from_json(model_data[0], custom_objects={'KerasLayer': hub.KerasLayer})
+        pred_probs = model.predict(val_sentences)
+        preds = tf.argmax(pred_probs, axis=1).numpy()
+        return json.dumps(preds), {'display': 'block'}
+
+
+# Analyze Model
+@app.callback(
+    Output(component_id='display-training-results', component_property='children'),
+    [
+        Input(component_id='analyze-model', component_property='value'),
+        Input(component_id='model', component_property='data'),
+        Input(component_id='predictions', component_property='data')
+    ],
+    prevent_initial_call=True
+)
+def analyize_model(value, model_data, preds):
+    train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
+    history = pd.DataFrame(model_data[1])
+
+    if value == 'history_df':
+        return dbc.Table.from_dataframe(history)
+    elif value == 'loss_graph':
+        fig = px.line(history, y=['loss', 'val_loss'], x=history.index,
+                      title="Loss",
+                      labels={"index": "Epoch",
+                              "value": "Loss",
+                              "variable": "Function"})
+        fig.update_layout(paper_bgcolor='rgba(0,0,0,0)')
+        return dcc.Graph(figure=fig)
+    elif value == 'accuracy_graph':
+        fig = px.line(history, y=['accuracy', 'val_accuracy'], x=history.index,
+                      title="Accuracy",
+                      labels={"index": "Epoch",
+                              "value": "Accuracy",
+                              "variable": "Function"})
+        fig.update_layout(paper_bgcolor='rgba(0,0,0,0)')
+        return dcc.Graph(figure=fig)
+    elif value == 'conf-mat':
+        cm_df = pd.DataFrame(data=confusion_matrix(y_true=val_labels, y_pred=preds),
+                             columns=class_names,
+                             index=class_names
+                             )
+
+        fig = px.imshow(cm_df,
+                        text_auto=True,
+                        color_continuous_scale=px.colors.sequential.Blues)
+        fig.update_layout(xaxis=dict(tickfont=dict(size=10), tickmode="linear"),
+                          yaxis=dict(tickfont=dict(size=10), tickmode="linear"),
+                          title="Tweets Classification Confusion Matrix",
+                          paper_bgcolor='rgba(0,0,0,0)'
+                          )
+        fig.update_traces(hovertemplate="<br>".join([
+            "Predicted label: %{x}",
+            "True label: %{y}",
+            "Preds count: %{z}"
+        ])
+        )
+        return dcc.Graph(figure=fig)
 
 app.run(debug=True)
 
