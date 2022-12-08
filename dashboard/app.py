@@ -1,12 +1,21 @@
 import dash
-from dash import html, dcc, Input, Output
+from dash import html, dcc, Input, Output, State
 import dash_bootstrap_components as dbc
 
 import numpy as np
+import tensorflow as tf
+import tensorflow_hub as hub
+import tensorflow_addons as tfa
+from tensorflow.keras import layers
+from tensorflow.keras.layers.experimental import preprocessing
+from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.model_selection import train_test_split
 
 import plotly.express as px
+from plotly.io.json import to_json_plotly
 
 import text_processing
+import visualizations as vis
 
 markdown_text = '''
 ### Dash and Markdown
@@ -126,9 +135,19 @@ app.layout = dbc.Container([
     ]),
 
     dbc.Row([
-        dbc.Button('Train a Model', id='submit-val', n_clicks=0, color="primary", className="me-1"),
+        dbc.Button(['Train USE Model',
+                    # dbc.Spinner(size='sm', color="danger", type="grow"), " Training..."
+                    dcc.Store(data=[], id="model", storage_type='local')],
+                   id='train_model',
+                   n_clicks=1,
+                   color="primary",
+                   className="me-1"
+                   ),
     ], style={'padding': '2%'}),
-], className="m-5", style={'backgroundColor': 'var(--bs-light)', })
+    # dbc.Row([
+    #     dbc.Spinner([html.Div(id='training-in-progress')], color="danger", type="grow")
+    # ], style={'padding': '2%'})
+], className=["pt-5", "p-5"], style={'backgroundColor': 'var(--bs-light)', })
 
 
 # Dataframes
@@ -173,6 +192,55 @@ def create_n_gram(phrases_num, lower, upper, class_name):
     fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
     return fig
 
+# USE Model
+def prepare_data(df_train, df_test):
+    # Split data into training and validation datasets
+    train_sentences, val_sentences, train_labels, val_labels = train_test_split(df_train["text"].to_numpy(),
+                                                                                df_train["target"].to_numpy(),
+                                                                                test_size=0.1,
+                                                                                random_state=7)
+    return train_sentences, val_sentences, train_labels, val_labels
+
+@app.callback(
+    Output(component_id='model', component_property='data'),
+    Input(component_id='train_model', component_property='n_clicks')
+)
+def create_model(n_clicks):
+    # Callbacks
+    early_stop = EarlyStopping(monitor="val_loss",
+                               verbose=1,
+                               patience=3)
+    tqdm_callback = tfa.callbacks.TQDMProgressBar()
+    print("loading model!")
+    # Create a keras layer using USE pretrained layer from TF Hub
+    sentence_encoder_use = hub.KerasLayer("https://tfhub.dev/google/universal-sentence-encoder/4",
+                                          input_shape=[],
+                                          dtype=tf.string,
+                                          trainable=False,
+                                          name="USE")
+    print("USE loaded")
+    # Create model using the Sequential API
+    model = tf.keras.models.Sequential([
+        sentence_encoder_use,
+        layers.Dense(64, activation="relu"),
+        layers.Dense(2, activation="softmax", name="output_layer")
+    ], name="baseline_USE")
+
+    # Compile the model
+    model.compile(loss="sparse_categorical_crossentropy",
+                    optimizer=tf.keras.optimizers.Adam(),
+                    metrics=["accuracy"])
+
+    # Get data
+    train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
+    # Fit the baseline model
+    history = model.fit(train_sentences,
+                      train_labels,
+                      epochs=30,
+                      validation_data=(val_sentences, val_labels),
+                      callbacks=[early_stop])
+
+    return to_json_plotly(model) #, history)
 
 
 app.run(debug=True)
