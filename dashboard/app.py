@@ -123,7 +123,7 @@ app.layout = dbc.Container([
                 ]),
                 dbc.Col([
                     html.H6(["Upper Boundary:"], style={'padding': '0 7%'}),
-                    dcc.Slider(1, 3, 1,
+                    dcc.Slider(1, 7, 1,
                                value=1,
                                id="upper-bound")
                 ]),
@@ -139,7 +139,7 @@ app.layout = dbc.Container([
                     # dbc.Spinner(size='sm', color="danger", type="grow"), " Training..."
                     dcc.Store(data=[], id="model", storage_type='local')],
                    id='train_model',
-                   n_clicks=1,
+                   n_clicks=0,
                    color="primary",
                    className="me-1"
                    ),
@@ -190,6 +190,11 @@ def create_n_gram(phrases_num, lower, upper, class_name):
     fig = px.bar(target[class_name],
                  labels={"index": "Phrase", "value": "Count"})
     fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
+    if class_name == 0:
+        fig.update_layout(title="Class 0: Not a Disaster", title_font_color="green", title_x=0.5)
+    else:
+        fig.update_layout(title="Class 1: Disaster", title_font_color="red", title_x=0.5)
+
     return fig
 
 # USE Model
@@ -210,7 +215,6 @@ def create_model(n_clicks):
     early_stop = EarlyStopping(monitor="val_loss",
                                verbose=1,
                                patience=3)
-    tqdm_callback = tfa.callbacks.TQDMProgressBar()
     print("loading model!")
     # Create a keras layer using USE pretrained layer from TF Hub
     sentence_encoder_use = hub.KerasLayer("https://tfhub.dev/google/universal-sentence-encoder/4",
@@ -234,13 +238,16 @@ def create_model(n_clicks):
     # Get data
     train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
     # Fit the baseline model
-    history = model.fit(train_sentences,
-                      train_labels,
-                      epochs=30,
-                      validation_data=(val_sentences, val_labels),
-                      callbacks=[early_stop])
+    if n_clicks > 0:
+        history = model.fit(train_sentences,
+                          train_labels,
+                          epochs=30,
+                          validation_data=(val_sentences, val_labels),
+                          callbacks=[early_stop])
 
-    return to_json_plotly(model) #, history)
+    return model.to_json()
 
 
 app.run(debug=True)
+
+## TODO: run the app with multiple workers so the callbacks can b executed in parallel
