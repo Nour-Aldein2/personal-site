@@ -19,7 +19,6 @@ from plotly.io.json import to_json_plotly
 
 import text_processing
 import visualizations as vis
-import json
 
 markdown_text = '''
 ### Dash and Markdown
@@ -140,9 +139,7 @@ app.layout = html.Div([dbc.Container([
     ]),
     # ----------------------- Model
     dbc.Row([
-        dmc.Button(['Train USE Model',
-                    # dbc.Spinner(size='sm', color="danger", type="grow"), " Training..."
-                   dcc.Store(data=[], id="model", storage_type='local')],
+        dmc.Button(['Train USE Model'],
                    id='train_model',
                    n_clicks=0,
                    disabled=False,
@@ -152,13 +149,13 @@ app.layout = html.Div([dbc.Container([
                    radius="xl",
                    gradient={"from": "teal", "to": "lime", "deg": 105}
                    ),
+        dcc.Store(data=[], id='model', storage_type='session')
     ], style={'padding': '2%'}),
     ## TODO: Create a button to make predictions
     # ----------------------- Model Predictions
     ## TODO: Add hover over this button to give the info that it predicts for the training data
     dbc.Row([
-        dmc.Button(['Make Predictions',
-                   dcc.Store(data=[], id="predictions", storage_type='local')],
+        dmc.Button(['Make Predictions'],
                    id='predict',
                    n_clicks=0,
                    disabled=False,
@@ -166,7 +163,8 @@ app.layout = html.Div([dbc.Container([
                    radius="xl",
                    gradient={"from": "teal", "to": "blue", "deg": 60},
                    ),
-    ], id='make-prediction', style={'padding': '2%', 'display': 'none'}),
+        dcc.Store(data=[], id="predictions", storage_type='session')
+    ], id='make-prediction', style={'display': 'none'}),
     # ----------------------- Understand Model
     dbc.Row([
         dmc.Chips(
@@ -184,7 +182,7 @@ app.layout = html.Div([dbc.Container([
             radius='xl',
             color='green'
         )
-    ], id='understand-model', style={'padding': '2%', 'display': 'none'}),
+    ], id='understand-model', style={'display': 'none'}),
 
     html.Div(id='display-training-results')
     ## TODO: Choose a random sample of the val_data, make prediction, then explain that prediction
@@ -195,7 +193,7 @@ app.layout = html.Div([dbc.Container([
 # ==========================================
 # ==============================
 # ===================
-
+# app.config['suppress_callback_exceptions'] = True
 
 # Dataframes
 @app.callback(
@@ -304,18 +302,21 @@ def create_model(n_clicks):
                           validation_data=(val_sentences, val_labels),
                           callbacks=[early_stop])
         print(history.history)
-        return [model.to_json(), history.history], True, "Done!", 'outline', {'display': 'block'}
+        return [model.to_json(), history.history], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
+    else:
+        return [model.to_json()], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
 
 
 # Make Predictions
 @app.callback(
     [
         Output(component_id='predictions', component_property='data'),
-        Output(component_id='understand-model', component_property='style')
+        Output(component_id='understand-model', component_property='style'),
+        Output(component_id='predict', component_property='disabled'),
     ],
     [
         Input(component_id='predict', component_property='n_clicks'),
-        Input(component_id='model', component_property='data')
+        Input(component_id='model', component_property='data'),
     ],
     prevent_initial_call=True
 )
@@ -325,7 +326,9 @@ def make_prediction(n_clicks, model_data):
         model = tf.keras.models.model_from_json(model_data[0], custom_objects={'KerasLayer': hub.KerasLayer})
         pred_probs = model.predict(val_sentences)
         preds = tf.argmax(pred_probs, axis=1).numpy()
-        return json.dumps(preds), {'display': 'block'}
+        return {'predictions': preds.tolist()}, {'padding': '2%', 'display': 'block'}, True
+    else:
+        return (), {'display': 'none'}, False
 
 
 # Analyze Model
@@ -340,11 +343,12 @@ def make_prediction(n_clicks, model_data):
 )
 def analyize_model(value, model_data, preds):
     train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
-    history = pd.DataFrame(model_data[1])
 
     if value == 'history_df':
+        history = pd.DataFrame(model_data[1])
         return dbc.Table.from_dataframe(history)
     elif value == 'loss_graph':
+        history = pd.DataFrame(model_data[1])
         fig = px.line(history, y=['loss', 'val_loss'], x=history.index,
                       title="Loss",
                       labels={"index": "Epoch",
@@ -353,6 +357,7 @@ def analyize_model(value, model_data, preds):
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)')
         return dcc.Graph(figure=fig)
     elif value == 'accuracy_graph':
+        history = pd.DataFrame(model_data[1])
         fig = px.line(history, y=['accuracy', 'val_accuracy'], x=history.index,
                       title="Accuracy",
                       labels={"index": "Epoch",
@@ -361,7 +366,7 @@ def analyize_model(value, model_data, preds):
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)')
         return dcc.Graph(figure=fig)
     elif value == 'conf-mat':
-        cm_df = pd.DataFrame(data=confusion_matrix(y_true=val_labels, y_pred=preds),
+        cm_df = pd.DataFrame(data=confusion_matrix(y_true=val_labels, y_pred=np.array(preds["predictions"])),
                              columns=class_names,
                              index=class_names
                              )
