@@ -20,6 +20,7 @@ from plotly.io.json import to_json_plotly
 import text_processing
 import visualizations as vis
 
+weights = None
 markdown_text = '''
 ### Dash and Markdown
 
@@ -149,7 +150,7 @@ app.layout = html.Div([dbc.Container([
                    radius="xl",
                    gradient={"from": "teal", "to": "lime", "deg": 105}
                    ),
-        dcc.Store(data=[], id='model', storage_type='session')
+        dcc.Store(data=[], id='model', storage_type='local')
     ], style={'padding': '2%'}),
     ## TODO: Create a button to make predictions
     # ----------------------- Model Predictions
@@ -216,8 +217,6 @@ def update_figure(feature):
                             color_discrete_sequence=['#774151'])
     fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
     return fig_test
-
-
 
 # N-Gram
 @app.callback(
@@ -301,7 +300,8 @@ def create_model(n_clicks):
                           epochs=30,
                           validation_data=(val_sentences, val_labels),
                           callbacks=[early_stop])
-        print(history.history)
+        global weights
+        weights = model.get_weights()
         return [model.to_json(), history.history], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
     else:
         return [model.to_json()], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
@@ -324,6 +324,7 @@ def make_prediction(n_clicks, model_data):
     if n_clicks > 0:
         train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
         model = tf.keras.models.model_from_json(model_data[0], custom_objects={'KerasLayer': hub.KerasLayer})
+        model.set_weights(weights)
         pred_probs = model.predict(val_sentences)
         preds = tf.argmax(pred_probs, axis=1).numpy()
         return {'predictions': preds.tolist()}, {'padding': '2%', 'display': 'block'}, True
