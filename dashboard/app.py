@@ -1,7 +1,7 @@
 import dash
 import pandas as pd
 from dash import html, dcc, Input, Output, State
-from dash.exceptions import PreventUpdate
+from dash_iconify import DashIconify
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 
@@ -14,8 +14,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
+import lime
+from lime.lime_text import LimeTextExplainer
+
 import plotly.express as px
-from plotly.io.json import to_json_plotly
+import plotly.graph_objects as go
 
 import text_processing
 import visualizations as vis
@@ -37,13 +40,14 @@ df_train = text_processing.load_and_process_data("train.csv")
 # print("Got train data")
 df_test = text_processing.load_and_process_data("test.csv")
 # print("Got test data")
-class_names = ["not_disaster", "disaster"]
+class_names = ["Not Disaster", "Disaster"]
+explainer = LimeTextExplainer(class_names=class_names, verbose=False)
 
 BS = "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 app = dash.Dash(external_stylesheets=["assets/typography.css", BS])
 # print("created the app")
 
-app.layout = html.Div([dbc.Container([
+app.layout = dmc.NotificationsProvider(html.Div([dbc.Container([
     dbc.Row([
         dbc.Col(html.H1("Explaining USE with LIME"), width=12)
     ]),
@@ -67,12 +71,12 @@ app.layout = html.Div([dbc.Container([
                             df_train[["id", "text", "target"]]),
                         style={"maxHeight": "450px", "overflow": "scroll"},
                     ), body=True,
-                ), className="p-5"), width={"size": 6, "order": "first"}
+                ), className=["pt-4", "mt-4"], fluid=True), width={"size": 5, "order": "first"}
         ),
         dbc.Col(
             html.Div([
                 dcc.Graph(id="train-hist")
-            ]), width={"size": 6, "order": "last"},
+            ]), width={"size": 7, "order": "last"},
         )
     ]),
     # ----------------------- Testing Data
@@ -84,12 +88,12 @@ app.layout = html.Div([dbc.Container([
                         dbc.Table.from_dataframe(df_test[["id", "text"]]),
                         style={"maxHeight": "450px", "overflow": "scroll"},
                     ), body=True,
-                ), className="p-5"), width={"size": 6, "order": "first"}
+                ), className=["pt-4", "mt-4"], fluid=True), width={"size": 5, "order": "first"}
         ),
         dbc.Col(
             html.Div([
                 dcc.Graph(id="test-hist")
-            ]), width={"size": 6, "order": "last"},
+            ]), width={"size": 7, "order": "last"},
         )
     ]),
     # ----------------------- N-Gram
@@ -131,13 +135,14 @@ app.layout = html.Div([dbc.Container([
                     dcc.Slider(1, 7, 1,
                                value=1,
                                id="upper-bound")
-                ]),
+                ], width={"order": "last"}),
             ], style={'padding': '1% 0'})
         ]),
-        dbc.Col(
-            dcc.Graph(id="n-gram")
-        )
-    ]),
+        dbc.Col([
+            html.Div(id="notify-container"),
+            dcc.Graph(id="n-gram"),
+        ], width={"order": "first"})
+    ], style={'paddingTop': '5%'}),
     # ----------------------- Model
     dbc.Row([
         dmc.Button(['Train USE Model'],
@@ -152,9 +157,7 @@ app.layout = html.Div([dbc.Container([
                    ),
         dcc.Store(data=[], id='model', storage_type='local')
     ], style={'padding': '2%'}),
-    ## TODO: Create a button to make predictions
     # ----------------------- Model Predictions
-    ## TODO: Add hover over this button to give the info that it predicts for the training data
     dbc.Row([
         dmc.Button(['Make Predictions'],
                    id='predict',
@@ -164,6 +167,11 @@ app.layout = html.Div([dbc.Container([
                    radius="xl",
                    gradient={"from": "teal", "to": "blue", "deg": 60},
                    ),
+        dbc.Tooltip(
+            "Make predictions for the validation data.",
+            target=f"predict",
+            placement="top",
+        ),
         dcc.Store(data=[], id="predictions", storage_type='session')
     ], id='make-prediction', style={'display': 'none'}),
     # ----------------------- Understand Model
@@ -185,16 +193,33 @@ app.layout = html.Div([dbc.Container([
         )
     ], id='understand-model', style={'display': 'none'}),
 
-    html.Div(id='display-training-results')
+    html.Div(id='display-training-results'),
+    # ----------------------- LIME
+    dbc.Row([
+        html.H3("Explain The Predictions of USE Model"),
+        dmc.Button(['Explain Random Prediction'],
+                   id='lime-val-button',
+                   n_clicks=0,
+                   variant="gradient",
+                   radius="md",
+                   gradient={"from": "orange", "to": "lime", "deg": 105}
+                   ),
+        html.Div(id='show-lime-val'),
+        html.Div(id="show-pred-truth")
+
+    ], id='explain-preds', style={'display': 'none'})
+    # ----------------------- Get any Tweet
+
     ## TODO: Choose a random sample of the val_data, make prediction, then explain that prediction
     ## TODO: Let the user enter a text, make prediction, then explain it
 ], className=["pt-5", "p-5", "main-container"], style={'backgroundColor': 'var(--bs-light)', })
-])
+]))
+
 
 # ==========================================
 # ==============================
 # ===================
-# app.config['suppress_callback_exceptions'] = True
+
 
 # Dataframes
 @app.callback(
@@ -203,8 +228,11 @@ app.layout = html.Div([dbc.Container([
 )
 def update_figure(feature):
     fig_train = px.histogram(df_train, x=feature, marginal="box",
-                             color_discrete_sequence=['#417767'])
-    fig_train.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
+                             color_discrete_sequence=['#417767'], template='plotly_white')
+    fig_train.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                            margin=dict(l=0, r=0, b=0, t=10))
+    fig_train.update_yaxes(visible=False, showticklabels=False)
+    fig_train.update_xaxes(visible=False)
     return fig_train
 
 
@@ -215,35 +243,87 @@ def update_figure(feature):
 def update_figure(feature):
     fig_test = px.histogram(df_test, x=feature, marginal="box",
                             color_discrete_sequence=['#774151'])
-    fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)')
+    fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                           margin=dict(l=0, r=0, b=15, t=0))
+    fig_test.update_yaxes(visible=False, showticklabels=False)
     return fig_test
+
+
+# N-Gram update notification
+@app.callback(
+    Output(component_id='notify-container', component_property='children'),
+    [
+        Input(component_id='phrases-num', component_property='value'),
+        Input(component_id='lower-bound', component_property='value'),
+        Input(component_id='upper-bound', component_property='value'),
+        Input(component_id='n-gram-class', component_property='value')
+    ]
+)
+def create_n_gram(phrases_num, lower, upper, class_name):
+    notification = dbc.Alert(
+        "Graph is updating, please wait.",
+        id="alert-auto",
+        is_open=True,
+        color="warning",
+        duration=4000,
+    )
+    return notification
 
 # N-Gram
 @app.callback(
-    Output(component_id='n-gram', component_property='figure'),
-    [Input(component_id='phrases-num', component_property='value'),
-     Input(component_id='lower-bound', component_property='value'),
-     Input(component_id='upper-bound', component_property='value'),
-     Input(component_id='n-gram-class', component_property='value')]
+    [
+        Output(component_id='n-gram', component_property='figure'),
+        Output(component_id='upper-bound', component_property='disabled'),
+        Output(component_id='upper-bound', component_property='value'),
+    ],
+    [
+        Input(component_id='phrases-num', component_property='value'),
+        Input(component_id='lower-bound', component_property='value'),
+        Input(component_id='upper-bound', component_property='value'),
+        Input(component_id='n-gram-class', component_property='value')
+    ]
 )
 def create_n_gram(phrases_num, lower, upper, class_name):
-    target = text_processing.get_top_count_vectorizer(df_train,
-                                                      df_train["text"],
-                                                      ngram=(lower, upper),
-                                                      n=phrases_num) # target_0, target_1
-    ## TODO: Fix condition for if the upper bound is larger the lower bound
-    fig = px.bar(target[class_name],
-                 labels={"index": "Phrase", "value": "Count"},
-                 orientation='h',
-                 color_discrete_sequence=['#2A5470'])
-    fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)')
-    fig['layout']['yaxis']['autorange'] = "reversed"
-    if class_name == 0:
-        fig.update_layout(title="Class 0: Not a Disaster", title_font_color="green", title_x=0.5)
-    else:
-        fig.update_layout(title="Class 1: Disaster", title_font_color="red", title_x=0.5)
+    if lower > upper:
+        upper = lower
+        target = text_processing.get_top_count_vectorizer(df_train,
+                                                          df_train["text"],
+                                                          ngram=(lower, upper),
+                                                          n=phrases_num)  # target_0, target_1
+        ## TODO: Fix condition for if the upper bound is larger the lower bound
+        fig = px.bar(target[class_name],
+                     labels={"index": "Phrase", "value": "Count"},
+                     orientation='h',
+                     color_discrete_sequence=['#2A5470'])
+        fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                          margin=dict(l=0, r=0, b=15, t=0))
+        fig['layout']['yaxis']['autorange'] = "reversed"
 
-    return fig
+        if class_name == 0:
+            fig.update_layout(title="Class 0: Not a Disaster", title_font_color="green", title_x=0.5)
+        else:
+            fig.update_layout(title="Class 1: Disaster", title_font_color="red", title_x=0.5)
+        return fig, True, upper
+    else:
+        target = text_processing.get_top_count_vectorizer(df_train,
+                                                          df_train["text"],
+                                                          ngram=(lower, upper),
+                                                          n=phrases_num)  # target_0, target_1
+        ## TODO: Fix condition for if the upper bound is larger the lower bound
+        fig = px.bar(target[class_name],
+                     labels={"index": "Phrase", "value": "Count"},
+                     orientation='h',
+                     color_discrete_sequence=['#2A5470'])
+        fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+                          margin=dict(l=0, r=0, b=15, t=0))
+        fig['layout']['yaxis']['autorange'] = "reversed"
+
+        if class_name == 0:
+            fig.update_layout(title="Class 0: Not a Disaster", title_font_color="green", title_x=0.5)
+        else:
+            fig.update_layout(title="Class 1: Disaster", title_font_color="red", title_x=0.5)
+        return fig, False, upper
+
 
 # USE Model
 def prepare_data(df_train, df_test):
@@ -254,6 +334,7 @@ def prepare_data(df_train, df_test):
                                                                                 random_state=7)
     return train_sentences, val_sentences, train_labels, val_labels
 
+
 @app.callback(
     [
         Output(component_id='model', component_property='data'),
@@ -261,7 +342,7 @@ def prepare_data(df_train, df_test):
         Output(component_id='train_model', component_property='children'),
         Output(component_id='train_model', component_property='variant'),
         Output(component_id='make-prediction', component_property='style')
-     ],
+    ],
     Input(component_id='train_model', component_property='n_clicks'),
     prevent_initial_call=True
 
@@ -288,18 +369,18 @@ def create_model(n_clicks):
 
     # Compile the model
     model.compile(loss="sparse_categorical_crossentropy",
-                    optimizer=tf.keras.optimizers.Adam(),
-                    metrics=["accuracy"])
+                  optimizer=tf.keras.optimizers.Adam(),
+                  metrics=["accuracy"])
 
     # Get data
     train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
     # Fit the baseline model
     if n_clicks > 0:
         history = model.fit(train_sentences,
-                          train_labels,
-                          epochs=30,
-                          validation_data=(val_sentences, val_labels),
-                          callbacks=[early_stop])
+                            train_labels,
+                            epochs=30,
+                            validation_data=(val_sentences, val_labels),
+                            callbacks=[early_stop])
         global weights
         weights = model.get_weights()
         return [model.to_json(), history.history], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
@@ -312,6 +393,7 @@ def create_model(n_clicks):
     [
         Output(component_id='predictions', component_property='data'),
         Output(component_id='understand-model', component_property='style'),
+        Output(component_id='explain-preds', component_property='style'),
         Output(component_id='predict', component_property='disabled'),
     ],
     [
@@ -327,9 +409,10 @@ def make_prediction(n_clicks, model_data):
         model.set_weights(weights)
         pred_probs = model.predict(val_sentences)
         preds = tf.argmax(pred_probs, axis=1).numpy()
-        return {'predictions': preds.tolist()}, {'padding': '2%', 'display': 'block'}, True
+        return {'predictions': preds.tolist()}, {'padding': '2%', 'display': 'block'}, {'padding': '2%',
+                                                                                        'display': 'block'}, True
     else:
-        return (), {'display': 'none'}, False
+        return (), {'display': 'none'}, {'display': 'none'}, False
 
 
 # Analyze Model
@@ -387,6 +470,63 @@ def analyize_model(value, model_data, preds):
         ])
         )
         return dcc.Graph(figure=fig)
+
+
+# Explain Predictions on Val
+@app.callback(
+    [
+        Output(component_id='show-lime-val', component_property='children'),
+        Output(component_id='show-pred-truth', component_property='children')
+    ],
+    [
+        Input(component_id='lime-val-button', component_property='n_clicks'),
+        Input(component_id='model', component_property='data'),
+        Input(component_id='predictions', component_property='data')
+    ],
+    prevent_initial_call=True
+)
+def explain_val(n_clicks, model_data, preds):
+    if n_clicks > 0:
+        train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
+        model = tf.keras.models.model_from_json(model_data[0], custom_objects={'KerasLayer': hub.KerasLayer})
+        model.set_weights(weights)
+        preds = preds["predictions"]
+        rng = np.random.RandomState(n_clicks + 132)
+        idx = rng.choice(range(len(preds)))
+        explain_pred = explainer.explain_instance(val_sentences[idx],
+                                                  classifier_fn=model.predict,
+                                                  labels=[val_labels[idx]])
+        if val_labels[idx] == preds[idx]:
+            return html.Iframe(
+                srcDoc=explain_pred.as_html(),
+                width='100%',
+                height='400px',
+                style={'border': '2px #d3d3d3 solid'},
+            ), dmc.Notification(
+                id="better-notify",
+                title=f"Prediction: {class_names[preds[idx]]}",
+                message=[f"True Label: {class_names[val_labels[idx]]}"],
+                action="show",
+                color='green',
+                icon=[DashIconify(icon="akar-icons:circle-check")],
+            )
+        else:
+            return html.Iframe(
+                srcDoc=explain_pred.as_html(),
+                width='100%',
+                height='400px',
+                style={'border': '2px #d3d3d3 solid'},
+            ), dmc.Notification(
+                id="better-notify",
+                title=f"Prediction: {class_names[preds[idx]]}",
+                message=[f"True Label: {class_names[val_labels[idx]]}"],
+                action="show",
+                color='red',
+                icon=[DashIconify(icon="akar-icons:circle-x")],
+            )
+    else:
+        return "", ""
+
 
 app.run(debug=True)
 
