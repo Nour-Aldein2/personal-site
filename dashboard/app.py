@@ -8,7 +8,6 @@ import dash_mantine_components as dmc
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
-import tensorflow_addons as tfa
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
@@ -528,6 +527,6 @@ def explain_val(n_clicks, model_data, preds):
         return "", ""
 
 
-app.run(debug=True)
+app.run(host="0.0.0.0", port="8050")
 
 ## TODO: run the app with multiple workers so the callbacks can b executed in parallel
