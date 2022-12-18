@@ -10,10 +10,8 @@ import tensorflow as tf
 import tensorflow_hub as hub
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
-
 
 import lime
 from lime.lime_text import LimeTextExplainer
@@ -66,8 +64,6 @@ you click on this button, a random prediction will be generated.
 df_train = text_processing.load_and_process_data("train.csv")
 # print("Got train data")
 df_test = text_processing.load_and_process_data("test.csv")
-dropdown_ids_lst = df_test.select_dtypes(include=np.number).columns[1:].to_list()
-dropdown_ids = [{"label": " ".join(i.split("_")).title(), "value": i} for i in dropdown_ids_lst]
 # print("Got test data")
 class_names = ["Not Disaster", "Disaster"]
 explainer = LimeTextExplainer(class_names=class_names, verbose=False)
@@ -83,7 +79,7 @@ app.layout = dmc.NotificationsProvider(html.Div([dbc.Container([
     dbc.Row([
         dcc.Markdown(md_project_intro),
         dcc.Dropdown(
-            dropdown_ids,  # Don't include ID
+            df_test.select_dtypes(include=np.number).columns[1:],  # Don't include ID
             "char_count",
             id="feature-selector"
         ),
@@ -93,21 +89,28 @@ app.layout = dmc.NotificationsProvider(html.Div([dbc.Container([
     ## TODO: Add titles for each section of the dashboard (training, test, n-gram)
     # ----------------------- Training Data
     dbc.Row([
-        dbc.Col(
-            html.Div([
-                dmc.Button(
-                    "Show Five Random Tweets",
-                    id="show-random-train",
-                    color="gray",
-                    fullWidth=True
-                ),
-                html.Div(id='train-texts', style={'padding': '6% 0'})
-            ], style={"size": 6, 'padding': '3% 0'}),
-        ),
+        dbc.Col(id='train-texts'),
         dbc.Col(
             html.Div([
                 dcc.Graph(id="train-hist")
-            ]), width={"size": 6, "order": "last"},
+            ]), width={"size": 7, "order": "last"},
+        )
+    ]),
+    # ----------------------- Testing Data
+    dbc.Row([
+        dbc.Col(
+            dbc.Container(
+                dbc.Card(
+                    html.Div(
+                        dbc.Table.from_dataframe(df_test[["id", "text"]]),
+                        style={"maxHeight": "450px", "overflow": "scroll"},
+                    ), body=True,
+                ), className=["pt-4", "mt-4"], fluid=True), width={"size": 5, "order": "first"}
+        ),
+        dbc.Col(
+            html.Div([
+                dcc.Graph(id="test-hist")
+            ]), width={"size": 7, "order": "last"},
         )
     ]),
     # ----------------------- N-Gram
@@ -147,10 +150,8 @@ app.layout = dmc.NotificationsProvider(html.Div([dbc.Container([
             ], style={'padding': '1% 0'})
         ]),
         dbc.Col([
-            dmc.LoadingOverlay(
-                dcc.Graph(id="n-gram"),
-                loaderProps={"variant": "bars", "color": "blue", "size": 100}
-            ),
+            html.Div(id="notify-container"),
+            dcc.Graph(id="n-gram"),
         ], width={"order": "first"})
     ], style={'paddingTop': '5%'}),
     # ----------------------- Model
@@ -240,35 +241,55 @@ app.layout = dmc.NotificationsProvider(html.Div([dbc.Container([
 )
 def update_figure(feature):
     fig_train = px.histogram(df_train, x=feature, marginal="box",
-                             color_discrete_sequence=['#417767'],
-                             labels={feature: " ".join(feature.split("_")).title(), "count": "Count"})
+                             color_discrete_sequence=['#417767'])
     fig_train.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)', # plot_bgcolor='rgba(0,0,0,0)',
-                            margin=dict(l=0, r=0, b=0, t=10),
-                            bargap=0.2,)
-    fig_train.update_yaxes(ticklabelposition="inside top")
+                            margin=dict(l=0, r=0, b=0, t=10))
+    fig_train.update_yaxes(
+        # visible=False,
+        showticklabels=False
+    )
+    fig_train.update_xaxes(visible=False)
     return fig_train
 
 
 @app.callback(
-    [
-        Output(component_id="train-texts", component_property="children"),
-        Output(component_id="show-random-train", component_property="loading")
-    ],
-    Input(component_id="show-random-train", component_property="n_clicks"),
-    prevent_initial_call=True
+    Output(component_id='test-hist', component_property='figure'),
+    Input(component_id='feature-selector', component_property='value')
 )
-def get_train_texts(n_clicks):
-    if n_clicks > 0:
-        num = 5
-        samples = []
-        tweets = df_train.sample(n=num)
-        for i in range(num):
-            samples.append(f"**Random tweet {i+1}**: {tweets['text'].iloc[i]}")
-        markdown_train = "\n\n".join(samples)
-        return dcc.Markdown(markdown_train), False
-    else:
-        return "", False
+def update_figure(feature):
+    fig_test = px.histogram(df_test, x=feature, marginal="box",
+                            color_discrete_sequence=['#774151'])
+    fig_test.update_layout(height=600, paper_bgcolor='rgba(0,0,0,0)', # plot_bgcolor='rgba(0,0,0,0)',
+                           margin=dict(l=0, r=0, b=15, t=0))
+    fig_test.update_yaxes(
+        # visible=False,
+        showticklabels=False
+    )
+    return fig_test
 
+def get_train_texts():
+    pass
+
+
+# N-Gram update notification
+@app.callback(
+    Output(component_id='notify-container', component_property='children'),
+    [
+        Input(component_id='phrases-num', component_property='value'),
+        Input(component_id='lower-bound', component_property='value'),
+        Input(component_id='upper-bound', component_property='value'),
+        Input(component_id='n-gram-class', component_property='value')
+    ]
+)
+def create_n_gram(phrases_num, lower, upper, class_name):
+    notification = dbc.Alert(
+        "Graph is updating, please wait.",
+        id="alert-auto",
+        is_open=True,
+        color="warning",
+        duration=4000,
+    )
+    return notification
 
 # N-Gram
 @app.callback(
@@ -326,14 +347,13 @@ def create_n_gram(phrases_num, lower, upper, class_name):
         return fig, False, upper
 
 
-# LSTM Model
+# USE Model
 def prepare_data(df_train, df_test):
     # Split data into training and validation datasets
     train_sentences, val_sentences, train_labels, val_labels = train_test_split(df_train["text"].to_numpy(),
                                                                                 df_train["target"].to_numpy(),
                                                                                 test_size=0.1,
                                                                                 random_state=7)
-
     return train_sentences, val_sentences, train_labels, val_labels
 
 
@@ -349,47 +369,42 @@ def prepare_data(df_train, df_test):
     prevent_initial_call=True
 )
 def create_model(n_clicks):
-    print("Preparing data")
-    train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
-    print("Vectorizing text")
-    # Setup text vectorization variables
-    max_vocab_len = 10000  # max number of words to have in our vocabulary
-    max_length = 15  # max length our sequence will be (e.g. how many words from a tweet does a model see?)
+    # Callbacks
+    early_stop = EarlyStopping(monitor="val_loss",
+                               verbose=1,
+                               patience=3)
+    print("loading model!")
+    # Create a keras layer using USE pretrained layer from TF Hub
+    sentence_encoder_use = hub.KerasLayer("https://tfhub.dev/google/universal-sentence-encoder/4",
+                                          input_shape=[],
+                                          dtype=tf.string,
+                                          trainable=False,
+                                          name="USE")
+    print("USE loaded")
+    # Create model using the Sequential API
+    model = tf.keras.models.Sequential([
+        sentence_encoder_use,
+        layers.Dense(64, activation="relu"),
+        layers.Dense(2, activation="softmax", name="output_layer")
+    ], name="baseline_USE")
 
-    text_vectorizer = TextVectorization(max_tokens=max_vocab_len,
-                                        output_mode="int",
-                                        output_sequence_length=max_length)
-    # Fit the text vectroizer to the training text
-    text_vectorizer.adapt(train_sentences)
-    # Embedding
-    print("Getting Embeddings")
-    embedding = tf.keras.layers.Embedding(input_dim=max_vocab_len,  # set input shape
-                                 embeddings_initializer="uniform",
-                                 output_dim=128,  # The output shape: GPUs work better with numbers divisable by 8
-                                 input_length=max_length  # how long is each input
-                                 )
-    print("Creating model")
-    inputs = tf.keras.layers.Input(shape=(1,), dtype=tf.string)
-    x = text_vectorizer(inputs)
-    x = embedding(x)
-    x = tf.keras.layers.LSTM(64)(x)
-    outputs = tf.keras.layers.Dense(2, activation="softmax")(x)
-    model = tf.keras.models.Model(inputs, outputs)
+    # Compile the model
+    model.compile(loss="sparse_categorical_crossentropy",
+                  optimizer=tf.keras.optimizers.Adam(),
+                  metrics=["accuracy"])
+
+    # Get data
+    train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
+    # Fit the baseline model
     if n_clicks > 0:
-        model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-                      optimizer=tf.keras.optimizers.Adam(),
-                      metrics=["accuracy"])
-        history = model.fit(
-            train_sentences, train_labels,
-            epochs=3,
-            batch_size=32,
-            validation_data=(val_sentences, val_labels)
-        )
-        print("Getting weights...")
+        history = model.fit(train_sentences,
+                            train_labels,
+                            epochs=30,
+                            validation_data=(val_sentences, val_labels),
+                            callbacks=[early_stop])
         global weights
         weights = model.get_weights()
-        history = history.history
-        return [model.to_json(), history], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
+        return [model.to_json(), history.history], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
     else:
         return [model.to_json()], True, "Done!", 'outline', {'padding': '2%', 'display': 'block'}
 
@@ -482,8 +497,7 @@ def analyize_model(value, model_data, preds):
 @app.callback(
     [
         Output(component_id='show-lime-val', component_property='children'),
-        Output(component_id='show-pred-truth', component_property='children'),
-        Output(component_id='lime-val-button', component_property='loading')
+        Output(component_id='show-pred-truth', component_property='children')
     ],
     [
         Input(component_id='lime-val-button', component_property='n_clicks'),
@@ -495,7 +509,7 @@ def analyize_model(value, model_data, preds):
 def explain_val(n_clicks, model_data, preds):
     if n_clicks > 0:
         train_sentences, val_sentences, train_labels, val_labels = prepare_data(df_train, df_test)
-        model = tf.keras.models.model_from_json(model_data[0])
+        model = tf.keras.models.model_from_json(model_data[0], custom_objects={'KerasLayer': hub.KerasLayer})
         model.set_weights(weights)
         preds = preds["predictions"]
         rng = np.random.RandomState(n_clicks + 132)
@@ -516,7 +530,7 @@ def explain_val(n_clicks, model_data, preds):
                 action="show",
                 color='green',
                 icon=[DashIconify(icon="akar-icons:circle-check")],
-            ), False
+            )
         else:
             return html.Iframe(
                 srcDoc=explain_pred.as_html(),
@@ -530,9 +544,9 @@ def explain_val(n_clicks, model_data, preds):
                 action="show",
                 color='red',
                 icon=[DashIconify(icon="akar-icons:circle-x")],
-            ), False
+            )
     else:
-        return "", "", False
+        return "", ""
 
 
 app.run(host="0.0.0.0", port="7777", debug=True)
