@@ -535,4 +535,4 @@ def explain_val(n_clicks, model_data, preds):
         return "", "", False
 
 
-app.run(host="0.0.0.0", port="7777", debug=True)
+app.run(host="0.0.0.0", port="7777")
