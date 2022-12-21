@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io_BERT/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io_BERT/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io_BERT/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <meta charset="utf-8">
+    <meta name="author" content="Noor Aldeen Almusleh">
+    <meta name="keywords" content="Bidirectional Encoder Representation from Transformers, BERT, Kaggle, Tweets Classification, Local Interpretabale Model-Agnostic Explanations, LIME">
+    <meta name="description" content="Explain Bidirectional Encoder Representation from Transformers (BERT) predictions of Kaggle's competition (tweets classification) using Local Interpretabale Model-Agnostic Explanations (LIME)">
+    <title>Explaining BERT Model with LIME</title>
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Ubuntu&display=swap" rel="stylesheet">
+
+    <!-- CSS Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="CSS/styles.css">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/ec35dfd770.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+    <!-- MathJax scripts -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+      src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+
+
+    <header class="pb-3 mb-4 border-bottom">
+        <a href="index.html" class="d-flex align-items-center text-dark text-decoration-none">
+          <svg xmlns="#" width="40" height="32" class="me-2" viewBox="0 0 118 94" role="img"><title>Noor Aldeen</title><path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"></path></svg>
+          <span class="fs-4">Noor Aldeen</span>
+        </a>
+    </header>
+
+
+    <div class="row">
+        <div class="col-3">
+          <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end">
+            <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="#Abstract">Abstract</a>
+              <a class="nav-link" href="#Introduction">Introduction</a>
+              <a class="nav-link" href="#Model-Architecture">Model Architecture</a>
+              <a class="nav-link" href="#Explain-Sample-Tweets">Explain Sample Tweets</a>
+              <a class="nav-link" href="#Conclusion">Conclusion</a>
+            </nav>
+          </nav>
+        </div>
+      
+        <div class="col-9">
+          <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0">
+            <div id="Abstract">
+              <h4>Abstract</h4>
+              <p>...</p>
+            </div>
+            <div id="Introduction">
+              <h4>Introduction</h4>
+              <p>...</p>
+            </div>
+            <div id="Model-Architecture">
+              <h4>Model Architecture</h4>
+              <p>...</p>
+            </div>
+            <div id="Explain-Sample-Tweets">
+                <h4>Explain Sample Tweets</h4>
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+                    <div class="carousel-indicators">
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6" aria-label="Slide 7"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="7" aria-label="Slide 8"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="8" aria-label="Slide 9"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="9" aria-label="Slide 10"></button>
+                      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="10" aria-label="Slide 1"></button>
+                    </div>
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <img src="images/explain_BERT/tweet_1.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                        <div>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                              </div>
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_2.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                            </div>
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_3.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_4.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_5.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_5.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_6.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_7.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_8.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_9.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                      <div class="carousel-item">
+                        <img src="images/explain_BERT/tweet_10.png" class="d-block LIME-tweet" alt="example-tweet">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div id="Conclusion">
+                <h4>Conclusion</h4>
+                <p>...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <footer class="pt-3 mt-4 text-muted border-top footer">
+        © 2022 Noor Almusleh
+    </footer>
+  </body>
+
+</html>
