@@ -60,6 +60,10 @@ tt {
   transform: translateX(-10%);
 }
 
+.card-text {
+  color: #929898;
+}
+
 .footer {
   text-align: center;
 }
