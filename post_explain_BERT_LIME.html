@@ -48,7 +48,7 @@
     <div class="row">
         <div class="col-3">
           <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end">
-            <nav class="nav nav-pills flex-column">
+            <nav class="nav nav-pills bd-sidebar flex-column">
               <a class="nav-link" href="#Abstract">Abstract</a>
               <a class="nav-link" href="#Introduction">Introduction</a>
               <a class="nav-link" href="#Model-Architecture">Model Architecture</a>
@@ -62,15 +62,20 @@
           <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0">
             <div id="Abstract">
               <h4>Abstract</h4>
-              <p>...</p>
+              <p>
+                This page is a show case of how the famous model <strong>Bidirectional Encoder Representation from Transformers (BERT)</strong> model with two hidden layers on top of it makes desicion for a classfication task. The task is the popular <a href="https://www.kaggle.com/">Kaggle</a> Competition <a href="https://www.kaggle.com/c/nlp-getting-started">Natural Language Processing with Disaster Tweets</a>. This architecture helped in achiving a top 4% score on the leader dashboard. Using 10 examoles, that were chosen randomly, we will see that we can trust this model's predictions.
+            </p>
             </div>
             <div id="Introduction">
               <h4>Introduction</h4>
-              <p>...</p>
+              <p>
+                After searching for a model that achives top 4% score for Kaggle's Natural Language Processing with Disaster Tweets competition. The dataset in this competition is a CSV file with an <kbd>id</kbd> column, which is a unique identifier for each tweet, <kbd>text</kbd> column, which contains the text of the tweet and other columns that were not used (along side the <kbd>id</kbd> column) in the training process. Further details about the dataset could be found <a href="https://www.kaggle.com/competitions/nlp-getting-started/data">in the data section</a> on the competition's <a href="https://www.kaggle.com/competitions/nlp-getting-started">page</a>.
+                Bidirectional Encoder Representations from Transformers or BERT is a model designed to achieve state-of-the-art results when fine-tuned on several tasks, such as, classification, question answering, and language inference. When designing a language model, deciding the model does is crucial. In BERT's case, the model is trying to predict some masked tokens, as well as predicticting whether a sentence B is subsequent to sentence A. To better understand this model, one can refer to the orginal <a href="https://arxiv.org/abs/1810.04805">paper</a>. 
+            </p>
             </div>
             <div id="Model-Architecture">
               <h4>Model Architecture</h4>
-              <p>...</p>
+              <p>The pre-trained BERT model can be fine-tuned with just one additional layer placed on top of it acting as the output layer.</p>
             </div>
             <div id="Explain-Sample-Tweets">
                 <h4>Explain Sample Tweets</h4>
