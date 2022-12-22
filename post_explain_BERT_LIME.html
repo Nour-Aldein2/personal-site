@@ -69,7 +69,18 @@
             <div id="Introduction">
               <h4>Introduction</h4>
               <p>
-                After searching for a model that achives top 4% score for Kaggle's Natural Language Processing with Disaster Tweets competition. The dataset in this competition is a CSV file with an <kbd>id</kbd> column, which is a unique identifier for each tweet, <kbd>text</kbd> column, which contains the text of the tweet and other columns that were not used (along side the <kbd>id</kbd> column) in the training process. Further details about the dataset could be found <a href="https://www.kaggle.com/competitions/nlp-getting-started/data">in the data section</a> on the competition's <a href="https://www.kaggle.com/competitions/nlp-getting-started">page</a>.
+                After searching for a model that achives top 4% score for Kaggle's Natural Language Processing with Disaster Tweets competition. The dataset in this competition is a CSV file with an <kbd>id</kbd> column, which is a unique identifier for each tweet, <kbd>text</kbd> column, which contains the text of the tweet and other columns that were not used (along side the <kbd>id</kbd> column) in the training process. Further details about the dataset could be found <a href="https://www.kaggle.com/competitions/nlp-getting-started/data">in the data section</a> on the competition's <a href="https://www.kaggle.com/competitions/nlp-getting-started">page</a>. It is worth mentioning that throughtout this page we will be discussing the training dataset only.
+                <br>
+                <br>
+                The dataset contains 7613 tweets, some tweets contain hastages, mentions, and links. Tweets have a range of one word to 31 words, and the minmum number of charecter in a tweet is 7, while the maximum number is 157 charecters. Furthermore, they are distributed across two classes; real disaster, and not real disaster; as follow:
+
+                <figure class="figure">
+                    <img class="figure-img img-fluid rounded" src="images/explain_BERT/tweets-class-distribution.png" alt="tweets-class-distribution">
+                    <figcaption class="figure-caption text-center">Figure 1: Class distribution across dataset.</figcaption>
+                  </figure>
+
+                  
+                <br>
                 Bidirectional Encoder Representations from Transformers or BERT is a model designed to achieve state-of-the-art results when fine-tuned on several tasks, such as, classification, question answering, and language inference. When designing a language model, deciding the model does is crucial. In BERT's case, the model is trying to predict some masked tokens, as well as predicticting whether a sentence B is subsequent to sentence A. To better understand this model, one can refer to the orginal <a href="https://arxiv.org/abs/1810.04805">paper</a>. 
             </p>
             </div>
