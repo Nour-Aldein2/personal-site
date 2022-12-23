@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="afff43e6-0a08-4f0d-97ef-777d904130be" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/personal_site.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/personal_site.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,18 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "history": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
     {
-      "state": "OPEN",
-      "author": "Nour-Aldein2"
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;author&quot;: &quot;Nour-Aldein2&quot;
     }
   ],
-  "lastFilter": {
-    "state": "OPEN",
-    "author": "Nour-Aldein2"
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;author&quot;: &quot;Nour-Aldein2&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>

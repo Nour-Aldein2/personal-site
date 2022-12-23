@@ -17,7 +17,7 @@
 
     <!-- CSS Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/styles-posts.css">
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/ec35dfd770.js" crossorigin="anonymous"></script>
@@ -49,7 +49,7 @@
         <div class="col-3">
           <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end">
             <nav class="nav nav-pills bd-sidebar flex-column">
-              <a class="nav-link" href="#Abstract">Abstract</a>
+              <a class="nav-link" href="#Overview">Overview</a>
               <a class="nav-link" href="#Introduction">Introduction</a>
               <a class="nav-link" href="#Model-Architecture">Model Architecture</a>
               <a class="nav-link" href="#Explain-Sample-Tweets">Explain Sample Tweets</a>
@@ -60,33 +60,57 @@
       
         <div class="col-9">
           <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0">
-            <div id="Abstract">
-              <h4>Abstract</h4>
+            <div id="Overview">
+              <h4>Overview</h4>
               <p>
-                This page is a show case of how the famous model <strong>Bidirectional Encoder Representation from Transformers (BERT)</strong> model with two hidden layers on top of it makes desicion for a classfication task. The task is the popular <a href="https://www.kaggle.com/">Kaggle</a> Competition <a href="https://www.kaggle.com/c/nlp-getting-started">Natural Language Processing with Disaster Tweets</a>. This architecture helped in achiving a top 4% score on the leader dashboard. Using 10 examoles, that were chosen randomly, we will see that we can trust this model's predictions.
+                This page aims to demonstrate the capabilities of the well-known <strong>Bidirectional Encoder Representation from Transformers (BERT)</strong> model with two Bidirectional-LSTM layers, a fully connected layer, a drop out layer, and a classification layer  for a classification task, specifically the popular <a href="https://www.kaggle.com/">Kaggle</a> Competition <a href="https://www.kaggle.com/c/nlp-getting-started">Natural Language Processing with Disaster Tweets</a>. The use of this architecture resulted in achieving a top 4% score on the leaderboard. To further illustrate the reliability of this model's predictions, we will present 10 randomly selected predictions, and explain their how did the model decided to their class using <strong>Local Interpretable Model-Agnostic Explanations (LIME)</strong>.
             </p>
             </div>
             <div id="Introduction">
               <h4>Introduction</h4>
               <p>
-                After searching for a model that achives top 4% score for Kaggle's Natural Language Processing with Disaster Tweets competition. The dataset in this competition is a CSV file with an <kbd>id</kbd> column, which is a unique identifier for each tweet, <kbd>text</kbd> column, which contains the text of the tweet and other columns that were not used (along side the <kbd>id</kbd> column) in the training process. Further details about the dataset could be found <a href="https://www.kaggle.com/competitions/nlp-getting-started/data">in the data section</a> on the competition's <a href="https://www.kaggle.com/competitions/nlp-getting-started">page</a>. It is worth mentioning that throughtout this page we will be discussing the training dataset only.
+                In the pursuit of finding a model that achieved a top 4% score for the Kaggle's Natural Language Processing with Disaster Tweets competition, we conducted a search. The dataset utilized in this competition is a CSV file containing an <kbd>id</kbd> column, which serves as a unique identifier for each tweet, a <kbd>text</kbd> column with the tweet's text, and several other columns not utilized in the training process. Further information regarding the dataset can be found in the <a href="https://www.kaggle.com/competitions/nlp-getting-started/data">"Data" section</a> of the <a href="https://www.kaggle.com/competitions/nlp-getting-started">competition's page</a>. It is worth noting that the discussion on this page pertains specifically to the training dataset.
                 <br>
                 <br>
-                The dataset contains 7613 tweets, some tweets contain hastages, mentions, and links. Tweets have a range of one word to 31 words, and the minmum number of charecter in a tweet is 7, while the maximum number is 157 charecters. Furthermore, they are distributed across two classes; real disaster, and not real disaster; as follow:
-
+                The current dataset consists of 7613 tweets, with a range in length from 1-31 words, and a character count range of 7-157 characters. These tweets also may contain hashtags, mentions, and links. The tweets are classified into two categories: <em>real disaster</em> and <em>not real disaster</em>, with the distribution as follows:
+                <br>
                 <figure class="figure">
                     <img class="figure-img img-fluid rounded" src="images/explain_BERT/tweets-class-distribution.png" alt="tweets-class-distribution">
                     <figcaption class="figure-caption text-center">Figure 1: Class distribution across dataset.</figcaption>
-                  </figure>
+                </figure>
+                <br>
+                Below, we can see the n-grams for both classes. An N-gram is a group of N consecutive words (three in <a href="#fig2">Figure 2</a>) that can be either a long chunk of text or a shorter collection of syllables. N-Gram models utilize sequence data as input and generate a probability distribution of all potential items. From this distribution, a prediction is made based on the likelihood of each item. In addition to next-word prediction, N-Grams can also be utilized in language identification, information retrieval, and DNA sequencing predictions.
+                To calculate the probability of a word/phrase "w2" occuring after a word "w1":
+                $$ P(w2\circ w1)  = \frac{\text{Number of times } (w2 \circ w1) \text{ occur}}{\text{Number of times } w1 \text{ appeard in the corpus}} $$
+                <br>
+                <figure class="figure" id="fig2">
+                    <div class="container">
+                        <div class="row">
+                          <div class="col-lg-6 col-md-12">
+                            <img class="figure-img img-fluid rounded" src="images/explain_BERT/target_0.png" alt="n-gram-for-class-0">
+                          </div>
+                          <div class="col-lg-6 col-md-12">
+                            <img class="figure-img img-fluid rounded" src="images/explain_BERT/target_1.png" alt="n-gram-for-class-0">
+                          </div>
+                        </div>
+                    </div>
+                    <figcaption class="figure-caption text-center">Figure 2: An N-Gram for both classes in the dataset is presented. The purpose of this N-Gram is to demonstrate the appearance of a phrase in each class. </figcaption>
+                </figure>
+                
 
                   
                 <br>
-                Bidirectional Encoder Representations from Transformers or BERT is a model designed to achieve state-of-the-art results when fine-tuned on several tasks, such as, classification, question answering, and language inference. When designing a language model, deciding the model does is crucial. In BERT's case, the model is trying to predict some masked tokens, as well as predicticting whether a sentence B is subsequent to sentence A. To better understand this model, one can refer to the orginal <a href="https://arxiv.org/abs/1810.04805">paper</a>. 
+                To classify the dataset, we employed the use of Bidirectional Encoder Representations from Transformers (BERT). BERT is a model that has been designed to achieve state-of-the-art results upon fine-tuning on various tasks including classification, question answering, and language inference. In the design of a language model, it is crucial to consider the tasks the model will be attempting to perform. In the case of BERT, the model is attempting to predict masked tokens as well as determining whether sentence B subsequent to sentence A. For a more comprehensive understanding of this model, one can refer to the original research <a href="https://arxiv.org/abs/1810.04805">paper</a>. 
             </p>
             </div>
             <div id="Model-Architecture">
               <h4>Model Architecture</h4>
-              <p>The pre-trained BERT model can be fine-tuned with just one additional layer placed on top of it acting as the output layer.</p>
+              <p>
+                The pre-trained BERT model can be fine-tuned with the addition of a single output layer. However, in our case, a more complex architecture was chosen. First, the text was tokenized and masked as described in the <a href="https://arxiv.org/abs/1810.04805">original paper</a>, and then the sequence output of the model was captured and fed into a bidirectional-LSTM layer with 1024 units and a dropout rate of 90%. This layer produced a sequence output, which was then fed into another bidirectional-LSTM layer with the same hyperparameters. The pooled output of the later layer was passed through a dense layer with 64 hidden units and a ReLU activation function, followed by a dropout layer with a rate of 20%. Finally, the weights were passed to the output layer, which contained two units and utilized the Softmax activation function.
+                <br>
+                <br>
+                For this model, the uncased large BERT model from <a href="https://tfhub.dev/tensorflow/bert_en_uncased_L-24_H-1024_A-16/4">TensorFlow Hub</a> was utilized, featuring 24 Transformer blocks, a hidden size of 1024, and 16 Attention Heads. Additionally, the output layer used two units and a Softmax activation function rather than a single unit and a Sigmoid activation function, allowing for the use of the model's predict method in <a href="https://arxiv.org/abs/1602.04938">Local Interpretable Model-Agnostic Explanations (LIME)</a>.
+              </p>
             </div>
             <div id="Explain-Sample-Tweets">
                 <h4>Explain Sample Tweets</h4>
