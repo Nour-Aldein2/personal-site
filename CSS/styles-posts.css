@@ -12,6 +12,22 @@
     width: 600px;
   }
 
+  .lead {
+    border: 1px solid;
+    padding: 5px 5px;
+    border-radius: 4px;
+
+    /*DELETED*/
+    /*height: auto*/
+    /*text-align: center;*/
+
+    /*ADDED*/
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: column;
+}
+
   .footer {
     text-align: center;
   }
