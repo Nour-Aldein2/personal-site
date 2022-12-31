@@ -31,3 +31,46 @@
   .footer {
     text-align: center;
   }
+
+  /*Default CSS layout for narrow screens*/
+
+@media (max-width: 650px) {
+    /*CSS for medium width screens*/
+    .main-div {
+      padding: 5% 5%;
+      font-size: 80%;
+      /* text-align: center; */
+    }
+    .home {
+      font-size: 120%;
+    }
+    .index {
+      font-size: 80%;
+      margin-top: 1%;
+      margin-right: 2%;
+      word-wrap: break-word;
+      /* text-align: justify; */
+    }
+    .cv-section {
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 1100px) and (min-width: 650px) {
+    /*CSS for wide screens*/
+    .main-div {
+      padding: 5% 10%;
+      font-size: 90%;
+    }
+    .testimonial-image{
+      height: 275px;
+      width: 200px;
+    }
+    .index {
+      font-size: 90%;
+      margin-right: 2%;
+      word-wrap: initial;
+    }
+    
+    
+  }
