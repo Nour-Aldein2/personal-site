@@ -1,4 +1,12 @@
 /* Posts */
+body {
+    padding: 2%
+}
+
+p {
+    text-align: justify;
+}
+
 .carousel-item {
     height: 600px;
     /* background: rgb(241, 241, 241); */
@@ -51,9 +59,12 @@
       word-wrap: break-word;
       /* text-align: justify; */
     }
-    .cv-section {
-      text-align: center;
-    }
+
+    .LIME-tweet {
+        height: 300px;
+        width: 500px;
+      }
+
   }
   
   @media (max-width: 1100px) and (min-width: 650px) {
@@ -70,7 +81,9 @@
       font-size: 90%;
       margin-right: 2%;
       word-wrap: initial;
-    }
-    
-    
+    }    
+    .LIME-tweet {
+        height: 300px;
+        width: 600px;
+      }
   }

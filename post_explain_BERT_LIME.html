@@ -47,7 +47,7 @@
 
 
     <div class="row">
-        <div class="col-3">
+        <div class="col-lg-2 col-md-3 col-sm-12">
           <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end">
             <nav class="nav nav-pills bd-sidebar flex-column">
               <a class="nav-link" href="#Overview">Overview</a>
@@ -56,10 +56,11 @@
               <a class="nav-link" href="#Explain-Sample-Tweets">Explain Sample Tweets</a>
               <a class="nav-link" href="#Conclusion">Conclusion</a>
             </nav>
+            <hr style="border-top: dotted 1px;" />
           </nav>
         </div>
       
-        <div class="col-9">
+        <div class="col-lg-10 col-md-9 col-sm-12">
           <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-smooth-scroll="true" class="scrollspy-example-2" tabindex="0">
             <div id="Overview">
               <h4>Overview</h4>
@@ -81,8 +82,6 @@
                 </figure>
                 <br>
                 Below, we can see the n-grams for both classes. An N-gram is a group of N consecutive words (three in <a href="#fig2">Figure 2</a>) that can be either a long chunk of text or a shorter collection of syllables. N-Gram models utilize sequence data as input and generate a probability distribution of all potential items. From this distribution, a prediction is made based on the likelihood of each item. In addition to next-word prediction, N-Grams can also be utilized in language identification, information retrieval, and DNA sequencing predictions.
-                To calculate the probability of a word/phrase "w2" occuring after a word "w1":
-                $$ P(w2\circ w1)  = \frac{\text{Number of times } (w2 \circ w1) \text{ occur}}{\text{Number of times } w1 \text{ appeard in the corpus}} $$
                 <br>
                 <figure class="figure" id="fig2">
                     <div class="container">
@@ -307,7 +306,7 @@
 
 
     <footer class="pt-3 mt-4 text-muted border-top footer">
-        © 2022 Noor Almusleh
+        © 2023 Noor Almusleh
     </footer>
   </body>
 
