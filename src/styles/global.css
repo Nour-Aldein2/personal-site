@@ -199,9 +199,9 @@ blockquote {
 
 .hero {
   display: grid;
-  grid-template-columns: 1.4fr 0.9fr;
+  grid-template-columns: 1.75fr 0.9fr;
   gap: 2rem;
-  align-items: stretch;
+  align-items: start;
   padding: 3rem 0 2rem;
 }
 
@@ -249,15 +249,27 @@ blockquote {
 }
 
 .profile-panel {
+  align-self: start;
+  display: grid;
+  gap: 1.25rem;
   padding: 2rem;
 }
 
 .profile-panel img {
   width: 100%;
-  max-width: 240px;
+  max-width: 1220px;
   aspect-ratio: 5 / 6;
   object-fit: cover;
   border-radius: calc(var(--radius) - 4px);
+}
+
+.profile-panel__meta {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.profile-panel__meta .eyebrow {
+  margin-bottom: 0;
 }
 
 .eyebrow {
@@ -434,7 +446,6 @@ blockquote {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1rem;
 }
 
 .profile-link {
@@ -442,6 +453,28 @@ blockquote {
   align-items: center;
   gap: 0.55rem;
   color: var(--ink);
+}
+
+.profile-link--icon {
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-strong);
+  font-size: 1.1rem;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.profile-link--icon:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: var(--pill-blue-bg);
+  color: var(--accent-soft);
 }
 
 .cv-section-grid {

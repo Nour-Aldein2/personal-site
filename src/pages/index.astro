@@ -39,7 +39,7 @@ const personSchema = {
 ---
 
 <BaseLayout
-  title={`${siteSettings.authorName} | AI Researcher and AI Engineer`}
+  title={`${siteSettings.authorName} | AI Engineer/Researcher`}
   description={siteSettings.siteDescription}
   canonicalPath="/"
   ogType="profile"
@@ -82,12 +82,37 @@ const personSchema = {
           src={sitePath(siteSettings.authorImage)}
           alt={siteSettings.authorName}
         />
-        <div class="page-section">
+        <div class="profile-panel__meta">
           <p class="eyebrow">Profiles</p>
           <div class="profile-links">
-            <a class="profile-link" href={siteSettings.sameAs[0]} rel="me">GitHub</a>
-            <a class="profile-link" href={siteSettings.sameAs[1]} rel="me">LinkedIn</a>
-            <a class="profile-link" href={sitePath("publications/")}>Publications</a>
+            <a
+              class="profile-link profile-link--icon"
+              href={siteSettings.sameAs[0]}
+              rel="me noopener noreferrer"
+              target="_blank"
+              aria-label="GitHub"
+            >
+              <i class="fa-brands fa-github" aria-hidden="true"></i>
+              <span class="sr-only">GitHub</span>
+            </a>
+            <a
+              class="profile-link profile-link--icon"
+              href={siteSettings.sameAs[1]}
+              rel="me noopener noreferrer"
+              target="_blank"
+              aria-label="LinkedIn"
+            >
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              <span class="sr-only">LinkedIn</span>
+            </a>
+            <a
+              class="profile-link profile-link--icon"
+              href={sitePath("contact/")}
+              aria-label="Contact"
+            >
+              <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+              <span class="sr-only">Contact</span>
+            </a>
           </div>
         </div>
       </aside>

@@ -1,13 +1,14 @@
 export const siteSettings = {
   siteTitle: "Noor Aldeen Almusleh",
-  siteTagline: "AI Researcher and AI Engineer",
+  siteTagline: "AI Engineer/Researcher",
   siteDescription:
-    "Noor Aldeen Almusleh is an AI researcher and AI engineer focused on machine learning, NLP, explainability, astrophysics-informed research, and technical writing.",
+    "Noor Aldeen Almusleh is an AI researcher and AI engineer focused on computer vision and reinforcement learning " +
+      "research, 2D animation, computer graphics and animation.",
   authorName: "Noor Aldeen Almusleh",
-  authorRole: "AI Researcher and AI Engineer",
-  authorImage: "/images/profile_pic.png",
+  authorRole: "AI Engineer/Researcher",
+  authorImage: "/images/profile_pic.jpg",
   cvFilePath: "/Noor_CV.pdf",
-  location: "Dubai, UAE",
+  location: "Bath, UK",
   sameAs: [
     "https://github.com/Nour-Aldein2",
     "https://www.linkedin.com/in/nour-aldein-b15361123/",
@@ -30,8 +31,10 @@ export const siteSettings = {
     "AI researcher",
     "AI engineer",
     "machine learning engineer",
-    "NLP",
-    "technical writing",
+    "CV",
+    "computer vision",
+    "computer graphics",
+    "Reinforcement learning",
   ],
 };
 
