@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { articleTemplateLabels, sitePath } from "../lib/site";
+import { formatDate, getReadingTime } from "../lib/articles";
+
+interface Props {
+  article: CollectionEntry<"articles">;
+}
+
+const { article } = Astro.props;
+---
+
+<article class="content-card article-card">
+  <div class="article-card__meta">
+    <span class={`type-pill type-pill--${article.data.templateType}`}>
+      {articleTemplateLabels[article.data.templateType]}
+    </span>
+    <span>{formatDate(article.data.publishDate)}</span>
+    <span>{getReadingTime(article.body)}</span>
+  </div>
+  <h3>
+    <a href={sitePath(`articles/${article.data.slug}/`)}>{article.data.title}</a>
+  </h3>
+  <p>{article.data.description}</p>
+  <ul class="tag-list" aria-label="Article tags">
+    {article.data.tags.map((tag) => (
+      <li>{tag}</li>
+    ))}
+  </ul>
+</article>

@@ -1,0 +1,114 @@
+---
+import SEOHead from "../components/SEOHead.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  ogType?: "website" | "article" | "profile";
+  image?: string;
+  publishedTime?: string;
+  updatedTime?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const props = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <SEOHead {...props} />
+    <script is:inline>
+      (() => {
+        const storageKey = "theme-preference";
+        const root = document.documentElement;
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+        const getStoredPreference = () => {
+          try {
+            return localStorage.getItem(storageKey) || "auto";
+          } catch {
+            return "auto";
+          }
+        };
+
+        const getResolvedTheme = (preference) => {
+          if (preference === "light" || preference === "dark") {
+            return preference;
+          }
+
+          return mediaQuery.matches ? "dark" : "light";
+        };
+
+        const applyTheme = (preference) => {
+          const resolvedTheme = getResolvedTheme(preference);
+          root.dataset.themePreference = preference;
+          root.dataset.theme = resolvedTheme;
+          root.style.colorScheme = resolvedTheme;
+
+          if (metaThemeColor) {
+            metaThemeColor.setAttribute(
+              "content",
+              resolvedTheme === "dark" ? "#0f1720" : "#ffffff",
+            );
+          }
+
+          window.dispatchEvent(
+            new CustomEvent("themechange", {
+              detail: { preference, resolvedTheme },
+            }),
+          );
+        };
+
+        window.__applyThemePreference = (preference) => {
+          try {
+            localStorage.setItem(storageKey, preference);
+          } catch {}
+
+          applyTheme(preference);
+        };
+
+        const handleSystemThemeChange = () => {
+          if ((root.dataset.themePreference || "auto") === "auto") {
+            applyTheme("auto");
+          }
+        };
+
+        applyTheme(getStoredPreference());
+
+        if (typeof mediaQuery.addEventListener === "function") {
+          mediaQuery.addEventListener("change", handleSystemThemeChange);
+        } else if (typeof mediaQuery.addListener === "function") {
+          mediaQuery.addListener(handleSystemThemeChange);
+        }
+      })();
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://kit.fontawesome.com/ec35dfd770.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+      integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="page-shell">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

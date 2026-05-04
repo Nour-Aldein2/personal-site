@@ -1,0 +1,90 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ArticleCard from "../components/ArticleCard.astro";
+import ArticleToc from "../components/ArticleToc.astro";
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { articleTemplateLabels } from "../lib/site";
+import { formatDate } from "../lib/articles";
+
+interface Props {
+  article: CollectionEntry<"articles">;
+  headings: { depth: number; slug: string; text: string }[];
+  readingTime: string;
+  related: CollectionEntry<"articles">[];
+  newer?: CollectionEntry<"articles">;
+  older?: CollectionEntry<"articles">;
+  schema: Record<string, unknown>[];
+}
+
+const { article, headings, readingTime, related, newer, older, schema } = Astro.props;
+---
+
+<BaseLayout
+  title={`${article.data.title} | Noor Aldeen Almusleh`}
+  description={article.data.description}
+  canonicalPath={`/articles/${article.data.slug}/`}
+  ogType="article"
+  image={article.data.heroImage}
+  publishedTime={article.data.publishDate.toISOString()}
+  updatedTime={(article.data.updatedDate ?? article.data.publishDate).toISOString()}
+  schema={schema}
+>
+  <div class="shell">
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Articles", href: "/articles/" },
+        { label: article.data.title },
+      ]}
+    />
+
+    <section class="article-hero">
+      <div class="article-hero__meta">
+        <span class={`type-pill type-pill--${article.data.templateType}`}>
+          {articleTemplateLabels[article.data.templateType]}
+        </span>
+        <span>{formatDate(article.data.publishDate)}</span>
+        <span>{readingTime}</span>
+      </div>
+      <h1>{article.data.title}</h1>
+      <p class="article-hero__dek">{article.data.description}</p>
+      <ul class="tag-list" aria-label="Article tags">
+        {article.data.tags.map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    </section>
+
+    <div class="article-grid">
+      <article class="article-content">
+        <slot />
+
+        {(newer || older) && (
+          <section class="article-links">
+            <h2>Continue reading</h2>
+            <div class="article-links__grid">
+              {newer && <ArticleCard article={newer} />}
+              {older && <ArticleCard article={older} />}
+            </div>
+          </section>
+        )}
+
+        {related.length > 0 && (
+          <section class="article-links">
+            <h2>Related articles</h2>
+            <div class="article-links__grid">
+              {related.map((entry) => (
+                <ArticleCard article={entry} />
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
+
+      <div class="article-sidebar">
+        <ArticleToc headings={headings} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

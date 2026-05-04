@@ -1,0 +1,87 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import {
+  getPrevNextArticles,
+  getReadingTime,
+  getRelatedArticles,
+  sortArticles,
+} from "../../lib/articles";
+import { absoluteSiteUrl, siteSettings } from "../../lib/site";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles", ({ data }) => !data.draft);
+  return articles.map((article) => ({
+    params: { slug: article.data.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props as { article: CollectionEntry<"articles"> };
+const allArticles = sortArticles(
+  await getCollection("articles", ({ data }) => !data.draft),
+);
+const { Content, headings } = await render(article);
+const related = getRelatedArticles(article, allArticles);
+const { newer, older } = getPrevNextArticles(article, allArticles);
+const readingTime = getReadingTime(article.body);
+const canonicalUrl = absoluteSiteUrl(`/articles/${article.data.slug}/`, Astro.site);
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.data.title,
+    description: article.data.description,
+    datePublished: article.data.publishDate.toISOString(),
+    dateModified: (article.data.updatedDate ?? article.data.publishDate).toISOString(),
+    author: {
+      "@type": "Person",
+      name: siteSettings.authorName,
+      alternateName: siteSettings.alternateNames,
+      sameAs: siteSettings.sameAs,
+    },
+    image: article.data.heroImage
+      ? absoluteSiteUrl(article.data.heroImage, Astro.site)
+      : undefined,
+    mainEntityOfPage: canonicalUrl,
+    keywords: article.data.tags.join(", "),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: absoluteSiteUrl("/", Astro.site),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Articles",
+        item: absoluteSiteUrl("/articles/", Astro.site),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.data.title,
+        item: canonicalUrl,
+      },
+    ],
+  },
+];
+---
+
+<ArticleLayout
+  article={article}
+  headings={headings}
+  readingTime={readingTime}
+  related={related}
+  newer={newer}
+  older={older}
+  schema={schema}
+>
+  <Content />
+</ArticleLayout>

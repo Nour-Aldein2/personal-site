@@ -1,0 +1,27 @@
+---
+import type { ProjectEntry } from "../lib/projects";
+import { sitePath } from "../lib/site";
+
+interface Props {
+  project: ProjectEntry;
+}
+
+const { project } = Astro.props;
+const projectHref =
+  project.href && project.href.startsWith("/") ? sitePath(project.href) : project.href;
+---
+
+<article class="content-card project-card">
+  <div class="project-card__meta">
+    <span class="status-pill status-pill--neutral">{project.status}</span>
+  </div>
+  <h3>
+    {projectHref ? <a href={projectHref}>{project.title}</a> : project.title}
+  </h3>
+  <p>{project.description}</p>
+  <ul class="tag-list" aria-label="Project tags">
+    {project.tags.map((tag) => (
+      <li>{tag}</li>
+    ))}
+  </ul>
+</article>

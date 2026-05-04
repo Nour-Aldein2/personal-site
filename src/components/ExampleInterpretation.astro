@@ -1,0 +1,28 @@
+---
+interface Props {
+  image: string;
+  imageAlt: string;
+  tweet: string;
+  prediction: string;
+  truth: string;
+  takeaway: string;
+}
+
+const { image, imageAlt, tweet, prediction, truth, takeaway } = Astro.props;
+const isCorrect = prediction === truth;
+---
+
+<section class="content-card example-interpretation">
+  <img src={image} alt={imageAlt} class="example-interpretation__image" />
+  <div class="example-interpretation__body">
+    <p class="eyebrow">Example interpretation</p>
+    <blockquote>{tweet}</blockquote>
+    <div class="example-interpretation__status">
+      <span class={`status-pill ${isCorrect ? "status-pill--good" : "status-pill--warn"}`}>
+        Prediction: {prediction}
+      </span>
+      <span class="status-pill status-pill--neutral">Truth: {truth}</span>
+    </div>
+    <p>{takeaway}</p>
+  </div>
+</section>

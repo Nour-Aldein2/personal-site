@@ -1,0 +1,79 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { cvSections } from "../../lib/cv";
+import { absoluteSiteUrl, siteSettings } from "../../lib/site";
+
+const publicationsSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `Publications | ${siteSettings.authorName}`,
+    description: `Research publications by ${siteSettings.authorName}.`,
+    url: absoluteSiteUrl("/publications/", Astro.site),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: absoluteSiteUrl("/", Astro.site),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Publications",
+        item: absoluteSiteUrl("/publications/", Astro.site),
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={`Publications | ${siteSettings.authorName}`}
+  description={`Research publications by ${siteSettings.authorName} in astrophysics and related work.`}
+  canonicalPath="/publications/"
+  ogType="website"
+  image={siteSettings.authorImage}
+  schema={publicationsSchema}
+>
+  <div class="shell">
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Publications" },
+      ]}
+    />
+
+    <section class="page-intro">
+      <p class="eyebrow">Research output</p>
+      <h1>Publications</h1>
+      <p>
+        Peer-reviewed papers and research output by {siteSettings.authorName}, with
+        direct links to DOI records, PDFs, and citation exports where available.
+      </p>
+    </section>
+
+    <section class="page-section">
+      <div class="cv-section-grid">
+        {cvSections.publications.map((item) => (
+          <section class="content-card">
+            <h2>{item.title}</h2>
+            <p class="timeline-item__meta">
+              {item.journal} · {item.date}
+            </p>
+            <div class="publication-links">
+              <a href={item.links.doi}>DOI</a>
+              <a href={item.links.pdf}>PDF</a>
+              {item.links.bibtex && <a href={item.links.bibtex}>BibTeX</a>}
+            </div>
+          </section>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

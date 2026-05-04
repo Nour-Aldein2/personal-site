@@ -1,0 +1,63 @@
+---
+const themeOptions = [
+  { value: "light", label: "Light", icon: "fa-sun" },
+  { value: "dark", label: "Dark", icon: "fa-moon" },
+  { value: "auto", label: "Auto", icon: "fa-circle-half-stroke" },
+];
+---
+
+<div class="theme-toggle" data-theme-toggle>
+  <div class="theme-toggle__controls" role="group" aria-label="Theme">
+    {themeOptions.map((option) => (
+      <button
+        type="button"
+        class="theme-toggle__button"
+        data-theme-value={option.value}
+        aria-pressed="false"
+        aria-label={option.label}
+        title={option.label}
+      >
+        <i class:list={["fa-solid", option.icon]} aria-hidden="true"></i>
+        <span class="sr-only">{option.label}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const initThemeToggle = () => {
+    document.querySelectorAll("[data-theme-toggle]").forEach((toggle) => {
+      if (toggle.dataset.bound === "true") {
+        return;
+      }
+
+      const buttons = Array.from(toggle.querySelectorAll("[data-theme-value]"));
+
+      const syncButtons = () => {
+        const preference = document.documentElement.dataset.themePreference || "auto";
+
+        buttons.forEach((button) => {
+          const isActive = button.dataset.themeValue === preference;
+          button.setAttribute("aria-pressed", String(isActive));
+          button.classList.toggle("theme-toggle__button--active", isActive);
+        });
+      };
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          window.__applyThemePreference?.(button.dataset.themeValue || "auto");
+        });
+      });
+
+      window.addEventListener("themechange", syncButtons);
+      syncButtons();
+      toggle.dataset.bound = "true";
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeToggle, { once: true });
+  } else {
+    initThemeToggle();
+  }
+</script>

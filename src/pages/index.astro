@@ -1,0 +1,128 @@
+---
+import { getCollection } from "astro:content";
+import ArticleCard from "../components/ArticleCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sortArticles } from "../lib/articles";
+import { featuredProjects } from "../lib/projects";
+import { absoluteSiteUrl, sitePath, siteSettings } from "../lib/site";
+
+const articles = sortArticles(
+  await getCollection("articles", ({ data }) => !data.draft),
+);
+
+const featuredArticles = articles.filter((entry) => entry.data.featured).slice(0, 3);
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteSettings.authorName,
+  alternateName: siteSettings.alternateNames,
+  jobTitle: siteSettings.authorRole,
+  description: siteSettings.siteDescription,
+  image: absoluteSiteUrl(siteSettings.authorImage, Astro.site),
+  url: absoluteSiteUrl("/", Astro.site),
+  sameAs: siteSettings.sameAs,
+  knowsAbout: [
+    "Artificial intelligence",
+    "Machine learning",
+    "Natural language processing",
+    "Model explainability",
+    "Technical writing",
+    "Astrophysics",
+  ],
+  homeLocation: {
+    "@type": "Place",
+    name: siteSettings.location,
+  },
+};
+---
+
+<BaseLayout
+  title={`${siteSettings.authorName} | AI Researcher and AI Engineer`}
+  description={siteSettings.siteDescription}
+  canonicalPath="/"
+  ogType="profile"
+  image={siteSettings.authorImage}
+  schema={personSchema}
+>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="eyebrow">Portfolio</p>
+        <h1>{siteSettings.authorName}</h1>
+        <p>
+          {siteSettings.authorName} is an AI researcher and AI engineer working across
+          machine learning systems, NLP, model explainability, scientific computing,
+          and technical writing.
+        </p>
+        <p>
+          This site brings together professional writing, applied ML work, research
+          context, and a structured CV so people searching for Noor Aldeen Almusleh can
+          quickly understand both the technical depth and the communication style behind
+          the work.
+        </p>
+        <div class="button-row">
+          <a
+            href={sitePath(siteSettings.cvFilePath)}
+            class="button-link button-link--primary"
+            target="_blank"
+            rel="noopener"
+          >
+            View CV
+          </a>
+          <a href={sitePath("articles/")} class="button-link button-link--secondary">
+            Read Articles
+          </a>
+        </div>
+      </div>
+
+      <aside class="profile-panel">
+        <img
+          src={sitePath(siteSettings.authorImage)}
+          alt={siteSettings.authorName}
+        />
+        <div class="page-section">
+          <p class="eyebrow">Profiles</p>
+          <div class="profile-links">
+            <a class="profile-link" href={siteSettings.sameAs[0]} rel="me">GitHub</a>
+            <a class="profile-link" href={siteSettings.sameAs[1]} rel="me">LinkedIn</a>
+            <a class="profile-link" href={sitePath("publications/")}>Publications</a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="page-section">
+      <div class="section-heading section-heading--wide">
+        <p class="eyebrow">Writing</p>
+        <h2>Selected articles and case studies</h2>
+        <p>
+          Selected writing and technical case studies, including the current published
+          post on model explainability with BERT and LIME.
+        </p>
+      </div>
+      <div class="article-index-grid">
+        {featuredArticles.map((article) => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="section-heading section-heading--wide">
+        <p class="eyebrow">Projects</p>
+        <h2>Selected machine learning and research projects</h2>
+        <p>
+          A compact view of applied machine learning, computer vision, and
+          research-oriented work drawn from the broader portfolio.
+        </p>
+      </div>
+      <div class="project-grid">
+        {featuredProjects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,80 @@
+---
+import { getCollection } from "astro:content";
+import ArticleCard from "../../components/ArticleCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sortArticles } from "../../lib/articles";
+import { absoluteSiteUrl, articleTemplateLabels } from "../../lib/site";
+
+const articles = sortArticles(
+  await getCollection("articles", ({ data }) => !data.draft),
+);
+
+const groupedArticles = {
+  "case-study": articles.filter((entry) => entry.data.templateType === "case-study"),
+  tutorial: articles.filter((entry) => entry.data.templateType === "tutorial"),
+  "research-note": articles.filter((entry) => entry.data.templateType === "research-note"),
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: absoluteSiteUrl("/", Astro.site),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Articles",
+      item: absoluteSiteUrl("/articles/", Astro.site),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Articles | Noor Aldeen Almusleh"
+  description="Case studies, tutorials, and research notes by Noor Aldeen Almusleh on AI, machine learning, NLP, and technical problem solving."
+  canonicalPath="/articles/"
+  schema={breadcrumbSchema}
+>
+  <div class="shell">
+    <section class="page-intro">
+      <p class="eyebrow">Writing</p>
+      <h1>Structured technical writing</h1>
+      <p>
+        This section collects public writing on AI, machine learning, model
+        explainability, and technical problem solving.
+      </p>
+    </section>
+
+    <section class="page-section">
+      <div class="section-heading">
+        <p class="eyebrow">Published writing</p>
+        <h2>Current articles</h2>
+      </div>
+
+      {Object.entries(groupedArticles).map(([key, entries]) => (
+        <section class="page-section">
+          <div class="section-heading">
+            <h2>{articleTemplateLabels[key as keyof typeof articleTemplateLabels]}</h2>
+          </div>
+          {entries.length > 0 ? (
+            <div class="article-index-grid">
+              {entries.map((entry) => (
+                <ArticleCard article={entry} />
+              ))}
+            </div>
+          ) : (
+            <p class="empty-state">
+              No published {articleTemplateLabels[key as keyof typeof articleTemplateLabels].toLowerCase()}s yet.
+            </p>
+          )}
+        </section>
+      ))}
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import { sitePath, siteSettings } from "../lib/site";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<header class="site-header">
+  <div class="shell site-header__inner">
+    <a class="site-brand" href={sitePath("/")}>
+      <span class="site-brand__name">{siteSettings.authorName}</span>
+      <span class="site-brand__role">{siteSettings.siteTagline}</span>
+    </a>
+
+    <div class="site-header__controls">
+      <nav aria-label="Primary" class="site-nav">
+        <a href={sitePath("/")}>Home</a>
+        <a href={sitePath(siteSettings.cvFilePath)} target="_blank" rel="noopener">CV</a>
+        <a href={sitePath("publications/")}>Publications</a>
+        <a href={sitePath("articles/")}>Articles</a>
+        <a href={sitePath("contact/")}>Contact</a>
+      </nav>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
