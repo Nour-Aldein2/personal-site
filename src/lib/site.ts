@@ -8,6 +8,7 @@ export const siteSettings = {
   authorRole: "AI Engineer/Researcher",
   authorImage: "/images/profile_pic.jpg",
   cvFilePath: "/Noor_CV.pdf",
+  contactHref: "mailto:contact@nourd.uk",
   location: "Bath, UK",
   sameAs: [
     "https://github.com/Nour-Aldein2",

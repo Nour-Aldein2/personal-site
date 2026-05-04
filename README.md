@@ -62,16 +62,10 @@ Examples:
   - `SITE_URL=https://your-domain.example`
   - `BASE_PATH=/`
 
-Optional repository variable:
-
-- `PUBLIC_CONTACT_FORM_ACTION`
-  - Use this if you want the contact form to submit to a real form endpoint.
-  - Without it, the contact form can still render, but GitHub Pages itself will not
-    forward email.
-
 Important:
 
 - Add your CV PDF at `public/Noor_CV.pdf` before pushing if you want the CV links to work.
+- Contact links open the visitor's email client with `mailto:contact@nourd.uk`.
 
 ## Check Before Deploying
 
@@ -87,7 +81,6 @@ Then check these pages locally:
 - `/`
 - `/articles/`
 - `/publications/`
-- `/contact/`
 - `/articles/bert-lime-disaster-tweets/`
 
 Before pushing, also run:

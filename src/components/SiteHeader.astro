@@ -16,7 +16,7 @@ import ThemeToggle from "./ThemeToggle.astro";
         <a href={sitePath(siteSettings.cvFilePath)} target="_blank" rel="noopener">CV</a>
         <a href={sitePath("publications/")}>Publications</a>
         <a href={sitePath("articles/")}>Articles</a>
-        <a href={sitePath("contact/")}>Contact</a>
+        <a href={siteSettings.contactHref}>Contact</a>
       </nav>
       <ThemeToggle />
     </div>

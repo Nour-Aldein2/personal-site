@@ -7,7 +7,6 @@ export async function GET({ site }: { site?: URL }) {
   const urls = [
     "/",
     "/publications/",
-    "/contact/",
     "/articles/",
     ...articles.map((article) => `/articles/${article.data.slug}/`),
   ];
