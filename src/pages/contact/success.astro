@@ -1,0 +1,45 @@
+---
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath, siteSettings } from "../../lib/site";
+
+const successSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: `Message sent | ${siteSettings.authorName}`,
+  description: `Confirmation page for contact form submissions to ${siteSettings.authorName}.`,
+};
+---
+
+<BaseLayout
+  title={`Message Sent | ${siteSettings.authorName}`}
+  description={`Confirmation page for contact form submissions to ${siteSettings.authorName}.`}
+  canonicalPath="/contact/success/"
+  ogType="website"
+  image={siteSettings.authorImage}
+  schema={successSchema}
+>
+  <div class="shell">
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Contact", href: "/contact/" },
+        { label: "Message sent" },
+      ]}
+    />
+
+    <section class="page-intro">
+      <p class="eyebrow">Contact</p>
+      <h1>Message sent</h1>
+      <p>
+        Your message has been submitted successfully. Thank you for reaching out.
+      </p>
+      <div class="button-row">
+        <a href={sitePath("/")} class="button-link button-link--primary">Return home</a>
+        <a href={sitePath("publications/")} class="button-link button-link--ghost">
+          View publications
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

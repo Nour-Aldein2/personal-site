@@ -1,0 +1,96 @@
+---
+import { absoluteSiteUrl, sitePath, siteSettings } from "../lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  ogType?: "website" | "article" | "profile";
+  image?: string;
+  publishedTime?: string;
+  updatedTime?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogType = "website",
+  image,
+  publishedTime,
+  updatedTime,
+  schema,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? "https://your-domain.example/";
+const canonicalUrl = absoluteSiteUrl(canonicalPath, siteUrl);
+const socialImage = image ? absoluteSiteUrl(image, siteUrl) : undefined;
+const schemaPayload = schema
+  ? Array.isArray(schema)
+    ? schema
+    : [schema]
+  : [];
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author" content={siteSettings.authorName} />
+<meta name="description" content={description} />
+<meta name="keywords" content={siteSettings.keywords.join(", ")} />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#ffffff" />
+
+<title>{title}</title>
+<link rel="canonical" href={canonicalUrl} />
+
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href={sitePath("images/favicon_io_home/apple-touch-icon.png")}
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="32x32"
+  href={sitePath("images/favicon_io_home/favicon-32x32.png")}
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="16x16"
+  href={sitePath("images/favicon_io_home/favicon-16x16.png")}
+/>
+<link rel="manifest" href={sitePath("site.webmanifest")} />
+
+<meta property="og:site_name" content={siteSettings.siteTitle} />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+{socialImage && <meta property="og:image" content={socialImage} />}
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{updatedTime && <meta property="article:modified_time" content={updatedTime} />}
+
+<meta name="twitter:card" content={socialImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{socialImage && <meta name="twitter:image" content={socialImage} />}
+
+<link
+  rel="preconnect"
+  href="https://fonts.googleapis.com"
+/>
+<link
+  rel="preconnect"
+  href="https://fonts.gstatic.com"
+  crossorigin
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Serif+4:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+{schemaPayload.map((entry) => (
+  <script type="application/ld+json" set:html={JSON.stringify(entry)} />
+))}

@@ -1,0 +1,28 @@
+---
+import { sitePath } from "../lib/site";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="breadcrumbs">
+  <ol>
+    {items.map((item) => (
+      <li>
+        {item.href ? (
+          <a href={item.href.startsWith("/") ? sitePath(item.href) : item.href}>{item.label}</a>
+        ) : (
+          <span>{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
