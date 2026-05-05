@@ -2,8 +2,7 @@ export const siteSettings = {
   siteTitle: "Noor Aldeen Almusleh",
   siteTagline: "AI Engineer/Researcher",
   siteDescription:
-    "Noor Aldeen Almusleh is an AI researcher and AI engineer focused on computer vision and reinforcement learning " +
-      "research, 2D animation, computer graphics and animation.",
+    "Noor Aldeen Almusleh is an AI researcher and AI engineer focused on applying AI and reinforcement learning techniques in computer graphics and 2D animations.",
   authorName: "Noor Aldeen Almusleh",
   authorRole: "AI Engineer/Researcher",
   authorImage: "/images/profile_pic.jpg",
