@@ -1,15 +1,48 @@
 ---
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { cvSections } from "../../lib/cv";
 import { absoluteSiteUrl, siteSettings } from "../../lib/site";
+
+const publications = [
+  {
+    title:
+      "Metal-poor Stars Observed with the Automated Planet Finder Telescope. III. CEMP-no Stars are the Descendant of Population III Stars",
+    journal: "Astronomische Nachrichten",
+    date: "June 2021",
+    links: {
+      doi: "http://doi.org/10.1002/asna.202113867",
+      pdf: "https://arxiv.org/pdf/2102.01076.pdf",
+      bibtex: "https://ui.adsabs.harvard.edu/abs/2021AN....342..625A/exportcitation",
+    },
+  },
+  {
+    title: "The Origin of LAMOST J1109+7459",
+    journal: "Segue Virtual Journal",
+    date: "November 2020",
+    links: {
+      doi: "https://doi.org/10.52526/25792776-2020.67.2-267",
+      pdf: "https://combao.bao.am/2020/267-271.pdf",
+      bibtex: "https://ui.adsabs.harvard.edu/abs/2020CoBAO..67..267K/exportcitation",
+    },
+  },
+  {
+    title:
+      "Probability Distribution of Magnetic Field Strengths through the Cyclotron Lines in High-Mass X-ray Binaries",
+    journal: "Jordan Journal of Physics",
+    date: "February 2020",
+    links: {
+      doi: "https://doi.org/10.47011/13.3.8",
+      pdf: "https://journals.yu.edu.jo/jjp/JJPIssues/Vol13No3pdf2020/8.pdf",
+    },
+  },
+];
 
 const publicationsSchema = [
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: `Publications | ${siteSettings.authorName}`,
-    description: `Research publications by ${siteSettings.authorName}.`,
+    description: `Research publications by ${siteSettings.authorName} in astrophysics, statistical analysis, and scientific computing.`,
     url: absoluteSiteUrl("/publications/", Astro.site),
   },
   {
@@ -35,7 +68,7 @@ const publicationsSchema = [
 
 <BaseLayout
   title={`Publications | ${siteSettings.authorName}`}
-  description={`Research publications by ${siteSettings.authorName} in astrophysics and related work.`}
+  description={`Research publications by ${siteSettings.authorName} in astrophysics, statistical analysis, and scientific computing.`}
   canonicalPath="/publications/"
   ogType="website"
   image={siteSettings.authorImage}
@@ -59,21 +92,21 @@ const publicationsSchema = [
     </section>
 
     <section class="page-section">
-      <div class="cv-section-grid">
-        {cvSections.publications.map((item) => (
-          <section class="content-card">
-            <h2>{item.title}</h2>
-            <p class="timeline-item__meta">
+      <ul class="publication-list">
+        {publications.map((item) => (
+          <li>
+            <span class="publication-list__title">{item.title}</span>
+            <span class="publication-list__meta">
               {item.journal} · {item.date}
-            </p>
+            </span>
             <div class="publication-links">
               <a href={item.links.doi}>DOI</a>
               <a href={item.links.pdf}>PDF</a>
               {item.links.bibtex && <a href={item.links.bibtex}>BibTeX</a>}
             </div>
-          </section>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   </div>
 </BaseLayout>

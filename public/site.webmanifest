@@ -1,7 +1,7 @@
 {
   "name": "Noor Aldeen Almusleh",
   "short_name": "Noor Aldeen",
-  "description": "AI researcher and AI engineer portfolio, CV, and technical writing.",
+  "description": "AI/ML engineer and researcher portfolio covering reinforcement learning, computer vision, MLOps, optimisation, and applied machine learning.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
