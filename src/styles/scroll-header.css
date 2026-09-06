@@ -1,0 +1,58 @@
+/* Shared scroll-responsive header. Load after header.css. Without JavaScript,
+   the safe fallback is opaque. State changes never alter height or padding. */
+:root { --sticky-header-height: 6rem; }
+html { scroll-padding-top: calc(var(--sticky-header-height) + 1rem); }
+.article-sidebar { top: calc(var(--sticky-header-height) + 1.5rem); }
+
+/* Opaque fallback and scrolled state. Background/shadow changes never affect
+   dimensions, so the navigation and content do not jump when the state changes. */
+:root:not([data-theme="dark"]) .site-header,
+:root[data-theme="dark"] .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border: 0;
+  background: var(--bg);
+  box-shadow: 0 1px 0 var(--hairline), 0 5px 16px rgba(24, 18, 16, 0.035);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
+}
+:root .site-header::before,
+:root .site-header::after {
+  transition: opacity 220ms ease;
+}
+:root .site-header[data-scroll-header="ready"]:not([data-scrolled="true"]) {
+  background: transparent;
+  box-shadow: none;
+}
+:root .site-header[data-scroll-header="ready"]:not([data-scrolled="true"])::before,
+:root .site-header[data-scroll-header="ready"]:not([data-scrolled="true"])::after {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-theme="dark"]) .site-header,
+  :root[data-theme="dark"] .site-header,
+  :root .site-header::before,
+  :root .site-header::after { transition: none; }
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  :root .site-header[data-scroll-header="ready"][data-scrolled] {
+    background: var(--bg);
+    box-shadow: none;
+  }
+  :root .site-header[data-scrolled="true"] {
+    box-shadow: 0 1px 0 currentColor;
+  }
+}
+@media print {
+  :root:not([data-theme="dark"]) .site-header,
+  :root[data-theme="dark"] .site-header,
+  :root .site-header[data-scroll-header="ready"] {
+    position: static;
+    background: transparent;
+    box-shadow: none;
+    transition: none;
+  }
+}

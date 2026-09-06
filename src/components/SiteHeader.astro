@@ -1,21 +1,23 @@
 ---
 import { sitePath, siteSettings } from "../lib/site";
 import ThemeToggle from "./ThemeToggle.astro";
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
+const isCurrent = (path: string) => currentPath === sitePath(path).replace(/\/$/, "");
+const isArticleSection = currentPath.startsWith(sitePath("articles/").replace(/\/$/, "") + "/");
 ---
 
 <header class="site-header">
   <div class="shell site-header__inner">
     <a class="site-brand" href={sitePath("/")}>
-      <span class="site-brand__name">{siteSettings.authorName}</span>
+      <span class="site-brand__name">Noor Aldeen</span>
       <span class="site-brand__role">{siteSettings.siteTagline}</span>
     </a>
-
     <div class="site-header__controls">
       <nav aria-label="Primary" class="site-nav">
-        <a href={sitePath("/")}>Home</a>
-        <a href={sitePath(siteSettings.cvFilePath)} target="_blank" rel="noopener">CV</a>
-        <a href={sitePath("publications/")}>Publications</a>
-        <a href={sitePath("articles/")}>Articles</a>
+        <a href={sitePath("/")} aria-current={isCurrent("/") ? "page" : undefined}>Home</a>
+        <a href={sitePath(siteSettings.cvFilePath)} target="_blank" rel="noopener" aria-label="CV (PDF, opens in a new tab)">CV</a>
+        <a href={sitePath("publications/")} aria-current={isCurrent("publications/") ? "page" : undefined}>Publications</a>
+        <a href={sitePath("articles/")} aria-current={isCurrent("articles/") ? "page" : isArticleSection ? "true" : undefined}>Articles</a>
         <a href={siteSettings.contactHref}>Contact</a>
       </nav>
       <ThemeToggle />

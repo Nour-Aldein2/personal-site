@@ -1,0 +1,7 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {sitePath} from "../lib/site";
+---
+<BaseLayout title="Page not found | Noor Aldeen Almusleh" description="This page could not be found." canonicalPath="/404.html" noindex>
+  <section class="shell legacy-redirect"><p class="eyebrow">404</p><h1>Page not found</h1><p>The page may have moved.</p><p><a class="button-link button-link--primary" href={sitePath("/")}>Return home</a></p></section>
+</BaseLayout>

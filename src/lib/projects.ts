@@ -4,8 +4,11 @@ export interface ProjectEntry {
   tags: string[];
   status: string;
   href?: string;
+  /** Optional public/ path or absolute HTTP(S) URL for a list thumbnail. */
+  heroImage?: string;
+  /** Leave empty for a decorative image already described by the title. */
+  heroImageAlt?: string;
 }
-
 export const featuredProjects: ProjectEntry[] = [
   {
     title: "Optimising MXene Stability with Deep Q-Learning",

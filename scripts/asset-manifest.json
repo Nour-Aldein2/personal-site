@@ -1,0 +1,22 @@
+{
+  "repository": "Nour-Aldein2/personal-site",
+  "revision": "7da6e6a09a84601fe8f569b3f5ce5798ea23d42b",
+  "files": [
+    "package-lock.json",
+    "public/Noor_CV.pdf",
+    "public/images/profile_pic.jpg",
+    "public/images/profile_pic.png",
+    "public/images/profile_pic_old.png",
+    "public/images/explain_BERT/tweet2.png",
+    "public/images/explain_BERT/tweet3.png",
+    "public/images/explain_BERT/tweet8.png",
+    "public/images/explain_BERT/tweet9.png",
+    "public/images/explain_BERT/tweets-class-distribution.png",
+    "public/images/favicon_io_home/android-chrome-192x192.png",
+    "public/images/favicon_io_home/android-chrome-512x512.png",
+    "public/images/favicon_io_home/apple-touch-icon.png",
+    "public/images/favicon_io_home/favicon-16x16.png",
+    "public/images/favicon_io_home/favicon-32x32.png",
+    "public/images/favicon_io_home/favicon.ico"
+  ]
+}

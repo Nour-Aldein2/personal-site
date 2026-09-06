@@ -1,0 +1,70 @@
+/* The approved palette, shared by every page, component and legacy redirect.
+   Light: white + #7C2710. Dark: warm charcoal + #CC9075.
+   Decorative washes and grids are in canvas.css, not individual pages. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-strong: #fbf6f4;
+  --ink: #302d2c;
+  --muted: #746d6a;
+  --border: rgba(124, 39, 16, 0.17);
+  --hairline: rgba(124, 39, 16, 0.12);
+  --accent: #7C2710;
+  --accent-rgb: 124 39 16;
+  --accent-soft: #95543f;
+  --on-accent: #ffffff;
+  --article-copy: #494341;
+  --code-bg: rgba(124, 39, 16, 0.065);
+  --input-bg: #ffffff;
+  --focus-outline: #7C2710;
+  --shadow: none;
+  --sage: #95543f;
+  --metadata: #77706d;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-heading: "Montserrat", system-ui, sans-serif;
+  --radius: 12px;
+  --content-width: min(1120px, calc(100% - 2rem));
+  --header-wash-left: transparent;
+  --header-wash-right: transparent;
+  --header-wash-opacity: 0;
+  --header-wash-saturation: 1;
+  --header-grain-opacity: 0;
+  --header-grain-strength: 1;
+  --header-text: var(--ink);
+  --header-secondary: var(--muted);
+  --header-link-active: var(--accent);
+  --header-focus: var(--focus-outline);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #181210;
+  --surface: #211916;
+  --surface-strong: #2b201b;
+  --ink: #f3eeeb;
+  --muted: #b7aca7;
+  --border: rgba(204, 144, 117, 0.23);
+  --hairline: rgba(204, 144, 117, 0.17);
+  --accent: #CC9075;
+  --accent-rgb: 204 144 117;
+  --accent-soft: #CC9075;
+  --on-accent: #181210;
+  --article-copy: #dbd2ce;
+  --code-bg: rgba(204, 144, 117, 0.1);
+  --input-bg: #211916;
+  --focus-outline: #CC9075;
+  --metadata: #a3a3a3;
+  --header-wash-left: rgba(191, 79, 24, 0.16);
+  --header-wash-right: rgba(123, 70, 47, 0.24);
+  --header-wash-opacity: 0.92;
+  --header-text: var(--ink);
+  --header-secondary: #b7aca7;
+  --header-link-active: var(--accent);
+  --header-focus: var(--focus-outline);
+  --header-wash-saturation: 0.70;
+  --header-grain-opacity: 0.045;
+  --sage: #a0b5a0;
+}
+/* A single background colour underneath the seamless decorative canvas. */
+html, body { background-color: var(--bg); }
+::selection { color: var(--on-accent); background: var(--accent); }

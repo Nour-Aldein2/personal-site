@@ -1,0 +1,335 @@
+
+> test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: lock normalisation pins only the root label and preserves transitive integrity
+ok 1 - lock normalisation pins only the root label and preserves transitive integrity
+  ---
+  duration_ms: 20.042882
+  type: 'test'
+  ...
+# Subtest: an incompatible customised lock is not overwritten
+ok 2 - an incompatible customised lock is not overwritten
+  ---
+  duration_ms: 3.803933
+  type: 'test'
+  ...
+# Subtest: applying the release preserves originals, history and unrelated files with backups
+ok 3 - applying the release preserves originals, history and unrelated files with backups
+  ---
+  duration_ms: 40.195939
+  type: 'test'
+  ...
+# Subtest: dry run reports changes without writing or backing up anything
+ok 4 - dry run reports changes without writing or backing up anything
+  ---
+  duration_ms: 53.647943
+  type: 'test'
+  ...
+# Subtest: installer rejects nested target locations and non-repositories
+ok 5 - installer rejects nested target locations and non-repositories
+  ---
+  duration_ms: 13.330626
+  type: 'test'
+  ...
+# Subtest: installer refuses a target symlink before making changes
+ok 6 - installer refuses a target symlink before making changes
+  ---
+  duration_ms: 36.096449
+  type: 'test'
+  ...
+# {
+#   "htmlPages": 5,
+#   "checkedLocalLinks": 5,
+#   "site": "https://nourd.uk",
+#   "base": "/",
+#   "result": "passed"
+# }
+# {
+#   "htmlPages": 5,
+#   "checkedLocalLinks": 5,
+#   "site": "https://Nour-Aldein2.github.io",
+#   "base": "/personal-site/",
+#   "result": "passed"
+# }
+# Subtest: generated-page validator accepts custom-domain and project-base fixtures
+ok 7 - generated-page validator accepts custom-domain and project-base fixtures
+  ---
+  duration_ms: 15.485499
+  type: 'test'
+  ...
+# Subtest: generated-page validator fails on missing local images instead of deploying broken pages
+ok 8 - generated-page validator fails on missing local images instead of deploying broken pages
+  ---
+  duration_ms: 7.860823
+  type: 'test'
+  ...
+# Subtest: generated-page validator catches a root link that escapes a project base
+ok 9 - generated-page validator catches a root link that escapes a project base
+  ---
+  duration_ms: 11.200055
+  type: 'test'
+  ...
+# Legacy URLs now use the shared theme and relative, base-safe redirects.
+# Subtest: legacy redirects receive the actual shared theme and saved-theme initializer
+ok 10 - legacy redirects receive the actual shared theme and saved-theme initializer
+  ---
+  duration_ms: 3.492497
+  type: 'test'
+  ...
+# Subtest: generated pages must use this release shared layout, not the old one
+ok 11 - generated pages must use this release shared layout, not the old one
+  ---
+  duration_ms: 6.313575
+  type: 'test'
+  ...
+# Subtest: safePath permits nested files and rejects traversal/absolute paths
+ok 12 - safePath permits nested files and rejects traversal/absolute paths
+  ---
+  duration_ms: 2.847088
+  type: 'test'
+  ...
+# Subtest: checks original binary signatures and the matching dependency lock
+ok 13 - checks original binary signatures and the matching dependency lock
+  ---
+  duration_ms: 0.493745
+  type: 'test'
+  ...
+# Subtest: rejects HTML error pages, truncated files and the wrong lock
+ok 14 - rejects HTML error pages, truncated files and the wrong lock
+  ---
+  duration_ms: 0.403663
+  type: 'test'
+  ...
+# Subtest: copies missing originals from a local checkout without network
+ok 15 - copies missing originals from a local checkout without network
+  ---
+  duration_ms: 27.603121
+  type: 'test'
+  ...
+# Subtest: preserves existing valid media, including customised files
+ok 16 - preserves existing valid media, including customised files
+  ---
+  duration_ms: 3.560006
+  type: 'test'
+  ...
+# Subtest: check mode fails cleanly without writing or fetching missing files
+ok 17 - check mode fails cleanly without writing or fetching missing files
+  ---
+  duration_ms: 4.682732
+  type: 'test'
+  ...
+# Subtest: check mode accepts a complete local asset set
+ok 18 - check mode accepts a complete local asset set
+  ---
+  duration_ms: 2.883135
+  type: 'test'
+  ...
+# Subtest: downloads from the pinned revision and commits a validated file atomically
+ok 19 - downloads from the pinned revision and commits a validated file atomically
+  ---
+  duration_ms: 31.280114
+  type: 'test'
+  ...
+# Subtest: a failed download never creates a production asset
+ok 20 - a failed download never creates a production asset
+  ---
+  duration_ms: 1070.013666
+  type: 'test'
+  ...
+# Subtest: invalid existing files are never silently overwritten
+ok 21 - invalid existing files are never silently overwritten
+  ---
+  duration_ms: 16.118394
+  type: 'test'
+  ...
+# Subtest: refuses a destination symlink rather than writing outside the project
+ok 22 - refuses a destination symlink rather than writing outside the project
+  ---
+  duration_ms: 4.077782
+  type: 'test'
+  ...
+# Subtest: an invalid local source is rejected before writing
+ok 23 - an invalid local source is rejected before writing
+  ---
+  duration_ms: 9.361951
+  type: 'test'
+  ...
+# Subtest: header starts transparent at the top and publishes its real height
+ok 24 - header starts transparent at the top and publishes its real height
+  ---
+  duration_ms: 2.846839
+  type: 'test'
+  ...
+# Subtest: the solid surface appears only past eight pixels and disappears at the top
+ok 25 - the solid surface appears only past eight pixels and disappears at the top
+  ---
+  duration_ms: 0.916014
+  type: 'test'
+  ...
+# Subtest: loading mid-page starts opaque, including on back-forward restoration
+ok 26 - loading mid-page starts opaque, including on back-forward restoration
+  ---
+  duration_ms: 0.641726
+  type: 'test'
+  ...
+# Subtest: scroll events are batched into a single animation frame
+ok 27 - scroll events are batched into a single animation frame
+  ---
+  duration_ms: 0.812722
+  type: 'test'
+  ...
+# Subtest: responsive header measurement updates anchor and sidebar offsets
+ok 28 - responsive header measurement updates anchor and sidebar offsets
+  ---
+  duration_ms: 1.036382
+  type: 'test'
+  ...
+# Subtest: mounting twice replaces listeners and observers rather than leaking them
+ok 29 - mounting twice replaces listeners and observers rather than leaking them
+  ---
+  duration_ms: 0.992201
+  type: 'test'
+  ...
+# Subtest: page swaps attach to the new header and release the old observer
+ok 30 - page swaps attach to the new header and release the old observer
+  ---
+  duration_ms: 0.705916
+  type: 'test'
+  ...
+# Subtest: DOMContentLoaded and no-ResizeObserver fallback are supported
+ok 31 - DOMContentLoaded and no-ResizeObserver fallback are supported
+  ---
+  duration_ms: 1.073173
+  type: 'test'
+  ...
+# Subtest: pages without navigation do not throw and still allow clean teardown
+ok 32 - pages without navigation do not throw and still allow clean teardown
+  ---
+  duration_ms: 1.427663
+  type: 'test'
+  ...
+# Subtest: every content route uses the shared page or article layout
+ok 33 - every content route uses the shared page or article layout
+  ---
+  duration_ms: 17.284959
+  type: 'test'
+  ...
+# Subtest: the base loads each shared stylesheet exactly once and has one header
+ok 34 - the base loads each shared stylesheet exactly once and has one header
+  ---
+  duration_ms: 1.227792
+  type: 'test'
+  ...
+# Subtest: one theme file owns the approved white-and-brown light palette
+ok 35 - one theme file owns the approved white-and-brown light palette
+  ---
+  duration_ms: 3.234346
+  type: 'test'
+  ...
+# Subtest: dark mode retains the agreed warm palette without page-specific colour overrides
+ok 36 - dark mode retains the agreed warm palette without page-specific colour overrides
+  ---
+  duration_ms: 7.200632
+  type: 'test'
+  ...
+# Subtest: matte layers fade horizontally at both outer edges without desaturating text
+ok 37 - matte layers fade horizontally at both outer edges without desaturating text
+  ---
+  duration_ms: 0.898049
+  type: 'test'
+  ...
+# Subtest: embedded texture is static and removed for print and forced colours
+ok 38 - embedded texture is static and removed for print and forced colours
+  ---
+  duration_ms: 11.89696
+  type: 'test'
+  ...
+# Subtest: compact name, role, navigation, PDF and theme controls are retained
+ok 39 - compact name, role, navigation, PDF and theme controls are retained
+  ---
+  duration_ms: 6.468694
+  type: 'test'
+  ...
+# Subtest: article and project rows use the same borderless styles without type labels
+ok 40 - article and project rows use the same borderless styles without type labels
+  ---
+  duration_ms: 2.054084
+  type: 'test'
+  ...
+# Subtest: the introduction remains unboxed and its name exactly four points smaller
+ok 41 - the introduction remains unboxed and its name exactly four points smaller
+  ---
+  duration_ms: 1.921191
+  type: 'test'
+  ...
+# Subtest: all relative source and stylesheet imports exist in this archive
+ok 42 - all relative source and stylesheet imports exist in this archive
+  ---
+  duration_ms: 28.946195
+  type: 'test'
+  ...
+# Subtest: the original article, publication records and legacy routes are retained
+ok 43 - the original article, publication records and legacy routes are retained
+  ---
+  duration_ms: 1.036785
+  type: 'test'
+  ...
+# Subtest: dependencies and original asset source are pinned, not fetched from a moving branch
+ok 44 - dependencies and original asset source are pinned, not fetched from a moving branch
+  ---
+  duration_ms: 2.037444
+  type: 'test'
+  ...
+# Subtest: GitHub validates PRs and only deploys successful non-PR builds
+ok 45 - GitHub validates PRs and only deploys successful non-PR builds
+  ---
+  duration_ms: 0.622984
+  type: 'test'
+  ...
+# Subtest: 404 is not indexed and canonical base-path helpers remain available
+ok 46 - 404 is not indexed and canonical base-path helpers remain available
+  ---
+  duration_ms: 1.468917
+  type: 'test'
+  ...
+# Subtest: the seamless header controller is loaded once through BaseLayout
+ok 47 - the seamless header controller is loaded once through BaseLayout
+  ---
+  duration_ms: 5.627091
+  type: 'test'
+  ...
+# Subtest: the continuous canvas contains light and dark static grids with edge fades
+ok 48 - the continuous canvas contains light and dark static grids with edge fades
+  ---
+  duration_ms: 0.673483
+  type: 'test'
+  ...
+# Subtest: the removed writing introduction does not reappear in any page
+ok 49 - the removed writing introduction does not reappear in any page
+  ---
+  duration_ms: 7.118481
+  type: 'test'
+  ...
+# Subtest: no superseded blue, teal, mint or lavender theme values remain in styles
+ok 50 - no superseded blue, teal, mint or lavender theme values remain in styles
+  ---
+  duration_ms: 0.831794
+  type: 'test'
+  ...
+# Subtest: browser/app chrome and legacy fallbacks contain no superseded theme colours
+ok 51 - browser/app chrome and legacy fallbacks contain no superseded theme colours
+  ---
+  duration_ms: 0.794028
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1267.708636

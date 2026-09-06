@@ -7,21 +7,44 @@ interface Props {
 }
 
 const { project } = Astro.props;
+const href = project.href?.trim();
 const projectHref =
-  project.href && project.href.startsWith("/") ? sitePath(project.href) : project.href;
+  href && href.startsWith("/") && !href.startsWith("//") ? sitePath(href) : href;
+const heroImage = project.heroImage?.trim();
+// Match ArticleCard: public/ paths respect BASE_URL; remote URLs stay absolute.
+const thumbnailSrc = heroImage
+  ? /^(?:https?:)?\/\//i.test(heroImage)
+    ? heroImage
+    : sitePath(heroImage)
+  : undefined;
 ---
 
-<article class="content-card project-card">
-  <div class="project-card__meta">
-    <span class="status-pill status-pill--neutral">{project.status}</span>
+<article data-entry-row class:list={["entry-row", "project-row", { "entry-row--text-only": !thumbnailSrc }]}>
+  {thumbnailSrc && (
+    <div class="entry-row__media project-row__media">
+      <img
+        data-entry-thumbnail class="entry-row__image project-row__image"
+        src={thumbnailSrc}
+        alt={project.heroImageAlt ?? ""}
+        width="300"
+        height="240"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )}
+
+  <div class="entry-row__body project-row__body">
+    <h3 class="entry-row__title project-row__title">
+      {projectHref ? <a href={projectHref}>{project.title}</a> : project.title}
+    </h3>
+    <p class="entry-row__description project-row__description">{project.description}</p>
+    {project.tags.length > 0 && (
+      <p class="entry-row__tags project-row__tags">
+        <span class="sr-only">Topics: </span>
+        {project.tags.join(" · ")}
+      </p>
+    )}
   </div>
-  <h3>
-    {projectHref ? <a href={projectHref}>{project.title}</a> : project.title}
-  </h3>
-  <p>{project.description}</p>
-  <ul class="tag-list" aria-label="Project tags">
-    {project.tags.map((tag) => (
-      <li>{tag}</li>
-    ))}
-  </ul>
 </article>
+

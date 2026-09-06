@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { articleTemplateLabels, sitePath } from "../lib/site";
+import { sitePath } from "../lib/site";
 import { formatDate, getReadingTime } from "../lib/articles";
 
 interface Props {
@@ -8,23 +8,50 @@ interface Props {
 }
 
 const { article } = Astro.props;
+const articleHref = sitePath(`articles/${article.data.slug}/`);
+const heroImage = article.data.heroImage?.trim();
+// Local public/ paths respect Astro's BASE_URL; remote images stay absolute.
+const thumbnailSrc = heroImage
+  ? /^(?:https?:)?\/\//i.test(heroImage)
+    ? heroImage
+    : sitePath(heroImage)
+  : undefined;
 ---
 
-<article class="content-card article-card">
-  <div class="article-card__meta">
-    <span class={`type-pill type-pill--${article.data.templateType}`}>
-      {articleTemplateLabels[article.data.templateType]}
-    </span>
-    <span>{formatDate(article.data.publishDate)}</span>
-    <span>{getReadingTime(article.body)}</span>
+<article data-entry-row class:list={["entry-row", "article-row", { "entry-row--text-only": !thumbnailSrc }]}>
+  {thumbnailSrc && (
+    <div class="entry-row__media article-row__media">
+      <!-- The adjacent title supplies the accessible name; the thumbnail is decorative. -->
+      <img
+        data-entry-thumbnail class="entry-row__image article-row__image"
+        src={thumbnailSrc}
+        alt=""
+        width="300"
+        height="240"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )}
+
+  <div class="entry-row__body article-row__body">
+    <h3 class="entry-row__title article-row__title">
+      <a href={articleHref}>{article.data.title}</a>
+    </h3>
+    <p class="entry-row__meta article-row__meta">
+      <time datetime={article.data.publishDate.toISOString()}>
+        {formatDate(article.data.publishDate)}
+      </time>
+      <span aria-hidden="true"> · </span>
+      <span>{getReadingTime(article.body ?? "")}</span>
+    </p>
+    <p class="entry-row__description article-row__description">{article.data.description}</p>
+    {article.data.tags.length > 0 && (
+      <p class="entry-row__tags article-row__tags">
+        <span class="sr-only">Topics: </span>
+        {article.data.tags.join(" · ")}
+      </p>
+    )}
   </div>
-  <h3>
-    <a href={sitePath(`articles/${article.data.slug}/`)}>{article.data.title}</a>
-  </h3>
-  <p>{article.data.description}</p>
-  <ul class="tag-list" aria-label="Article tags">
-    {article.data.tags.map((tag) => (
-      <li>{tag}</li>
-    ))}
-  </ul>
 </article>
+

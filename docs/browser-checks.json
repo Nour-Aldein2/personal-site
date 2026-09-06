@@ -1,0 +1,598 @@
+{
+  "kind": "HTML design fixtures (set_content; simulated storage for navigation) using shipped CSS/JS, NOT an Astro production build",
+  "results": [
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "light",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 320,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 390,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 768,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 1024,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 1440,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "home",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "articles",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "publications",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "article",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": true,
+      "issues": []
+    },
+    {
+      "page": "cv",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "page": "404",
+      "theme": "dark",
+      "viewport": 1920,
+      "result": "passed",
+      "scrolledStateTested": false,
+      "issues": []
+    },
+    {
+      "check": "theme toggle, fixture navigation with simulated storage, automatic system theme",
+      "result": "passed"
+    },
+    {
+      "check": "in-page anchors remain clear of the responsive header",
+      "result": "passed"
+    },
+    {
+      "check": "forced colours hide decorative grids",
+      "result": "passed"
+    },
+    {
+      "check": "print hides grid and removes sticky positioning",
+      "result": "passed"
+    }
+  ],
+  "failures": []
+}

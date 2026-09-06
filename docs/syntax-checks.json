@@ -1,0 +1,157 @@
+[
+  {
+    "file": "src/components/ArticleCard.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/ArticleToc.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/Breadcrumbs.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/ExampleInterpretation.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/Icon.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/ProjectCard.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/SEOHead.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/SiteFooter.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/SiteHeader.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/components/ThemeToggle.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/content.config.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/layouts/ArticleLayout.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/layouts/BaseLayout.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/lib/articles.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/lib/projects.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/lib/site.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/404.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/articles/[slug].astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/articles/index.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/cv/index.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/index.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/publications/index.astro",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/robots.txt.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/pages/sitemap.xml.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/scripts/entry-thumbnails.ts",
+    "type": "TS/JS syntax only (not Astro template compilation)",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/canvas.css",
+    "type": "CSS parse",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/entries.css",
+    "type": "CSS parse",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/global.css",
+    "type": "CSS parse",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/header.css",
+    "type": "CSS parse",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/scroll-header.css",
+    "type": "CSS parse",
+    "result": "passed"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "type": "CSS parse",
+    "result": "passed"
+  }
+]

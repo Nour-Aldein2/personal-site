@@ -1,27 +1,11 @@
 ---
-interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
-}
-
-interface Props {
-  headings: Heading[];
-}
-
-const { headings } = Astro.props;
-const visibleHeadings = headings.filter((heading) => heading.depth <= 3);
+interface Props { headings: {depth:number; slug:string; text:string}[]; }
+const headings = Astro.props.headings.filter(heading => heading.depth <= 3);
 ---
-
-{visibleHeadings.length > 0 && (
-  <aside class="content-card article-toc">
-    <p class="article-toc__title">On this page</p>
-    <ol>
-      {visibleHeadings.map((heading) => (
-        <li class={`article-toc__item article-toc__item--depth-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
+{headings.length > 0 && (
+  <aside class="content-card article-toc" aria-label="On this page">
+    <p class="article-toc__title">On this page</p><ol>
+    {headings.map(heading => <li class={`article-toc__item article-toc__item--depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
     </ol>
   </aside>
 )}

@@ -14,7 +14,6 @@ featured: true
 draft: false
 heroImage: "/images/explain_BERT/tweets-class-distribution.png"
 ---
-
 ## Problem
 
 The goal of this project was to build a high-performing classifier for the Kaggle
@@ -44,14 +43,9 @@ current events, and many noisy artifacts such as links and mentions.
 
 <figure>
   <a href="../../images/explain_BERT/tweets-class-distribution.png" class="figure-link">
-    <img
-      src="../../images/explain_BERT/tweets-class-distribution.png"
-      alt="Class distribution for the disaster tweets dataset"
-    />
+    <img src="../../images/explain_BERT/tweets-class-distribution.png" alt="Class distribution for the disaster tweets dataset" />
   </a>
-  <figcaption>
-    Class balance in the training dataset used for the case study.
-  </figcaption>
+  <figcaption>Class balance in the training dataset used for the case study.</figcaption>
 </figure>
 
 The key challenge in this dataset is not just language understanding. It is separating
@@ -104,99 +98,67 @@ why local interpretability matters even when the top-line score looks strong.
 
 <section class="content-card example-interpretation">
   <a href="../../images/explain_BERT/tweet2.png" class="example-interpretation__link">
-    <img
-      src="../../images/explain_BERT/tweet2.png"
-      alt="LIME explanation for a correctly classified disaster tweet"
-      class="example-interpretation__image"
-    />
+    <img src="../../images/explain_BERT/tweet2.png" alt="LIME explanation for a correctly classified disaster tweet" class="example-interpretation__image" />
   </a>
   <div class="example-interpretation__body">
     <p class="eyebrow">Example interpretation</p>
-    <blockquote>
-      Pic of 16yr old PKK suicide bomber who detonated bomb in Turkey Army trench released
-    </blockquote>
+    <blockquote>Pic of 16yr old PKK suicide bomber who detonated bomb in Turkey Army trench released</blockquote>
     <div class="example-interpretation__status">
       <span class="status-pill status-pill--good">Prediction: Disaster</span>
       <span class="status-pill status-pill--neutral">Truth: Disaster</span>
     </div>
-    <p>
-      This is a clean positive example. The prediction aligns with strongly
-      disaster-related terms such as “suicide bomber”, “detonated”, and “bomb”.
-    </p>
+    <p>This is a clean positive example. The prediction aligns with strongly
+      disaster-related terms such as “suicide bomber”, “detonated”, and “bomb”.</p>
   </div>
 </section>
 
 <section class="content-card example-interpretation">
   <a href="../../images/explain_BERT/tweet3.png" class="example-interpretation__link">
-    <img
-      src="../../images/explain_BERT/tweet3.png"
-      alt="LIME explanation for a correctly classified non-disaster tweet"
-      class="example-interpretation__image"
-    />
+    <img src="../../images/explain_BERT/tweet3.png" alt="LIME explanation for a correctly classified non-disaster tweet" class="example-interpretation__image" />
   </a>
   <div class="example-interpretation__body">
     <p class="eyebrow">Example interpretation</p>
-    <blockquote>
-      I'm on 2 blood pressure meds and it's still probably through the roof! Long before the #PPact story broke I was involved in animal rescue
-    </blockquote>
+    <blockquote>I'm on 2 blood pressure meds and it's still probably through the roof! Long before the #PPact story broke I was involved in animal rescue</blockquote>
     <div class="example-interpretation__status">
       <span class="status-pill status-pill--good">Prediction: Not real disaster</span>
       <span class="status-pill status-pill--neutral">Truth: Not real disaster</span>
     </div>
-    <p>
-      The model handled a noisy tweet correctly, but the explanation still shows
+    <p>The model handled a noisy tweet correctly, but the explanation still shows
       uncertainty. Words like “roof” and “rescue” are relevant, but not all strong
-      terms push in the same direction.
-    </p>
+      terms push in the same direction.</p>
   </div>
 </section>
 
 <section class="content-card example-interpretation">
   <a href="../../images/explain_BERT/tweet8.png" class="example-interpretation__link">
-    <img
-      src="../../images/explain_BERT/tweet8.png"
-      alt="LIME explanation for a mislabeled or ambiguous tweet"
-      class="example-interpretation__image"
-    />
+    <img src="../../images/explain_BERT/tweet8.png" alt="LIME explanation for a mislabeled or ambiguous tweet" class="example-interpretation__image" />
   </a>
   <div class="example-interpretation__body">
     <p class="eyebrow">Example interpretation</p>
-    <blockquote>
-      Just came back from camping and returned with a new song which gets recorded tomorrow. Can't wait! #Desolation #TheConspiracyTheory #NewEP
-    </blockquote>
+    <blockquote>Just came back from camping and returned with a new song which gets recorded tomorrow. Can't wait! #Desolation #TheConspiracyTheory #NewEP</blockquote>
     <div class="example-interpretation__status">
       <span class="status-pill status-pill--warn">Prediction: Not real disaster</span>
       <span class="status-pill status-pill--neutral">Truth: Disaster</span>
     </div>
-    <p>
-      This is a useful failure-analysis case. The prediction reads as semantically
+    <p>This is a useful failure-analysis case. The prediction reads as semantically
       reasonable even though it disagrees with the dataset label, which suggests the
-      example may be mislabeled or at least unusually ambiguous.
-    </p>
+      example may be mislabeled or at least unusually ambiguous.</p>
   </div>
 </section>
 
 <section class="content-card example-interpretation">
   <a href="../../images/explain_BERT/tweet9.png" class="example-interpretation__link">
-    <img
-      src="../../images/explain_BERT/tweet9.png"
-      alt="LIME explanation for an evacuation-related tweet"
-      class="example-interpretation__image"
-    />
+    <img src="../../images/explain_BERT/tweet9.png" alt="LIME explanation for an evacuation-related tweet" class="example-interpretation__image" />
   </a>
   <div class="example-interpretation__body">
     <p class="eyebrow">Example interpretation</p>
-    <blockquote>
-      Evacuation order lifted for town of Roosevelt - Washington Times
-    </blockquote>
+    <blockquote>Evacuation order lifted for town of Roosevelt - Washington Times</blockquote>
     <div class="example-interpretation__status">
       <span class="status-pill status-pill--good">Prediction: Disaster</span>
       <span class="status-pill status-pill--neutral">Truth: Disaster</span>
     </div>
-    <p>
-      The model correctly prioritized event-specific language such as “Evacuation”. This
-      is the kind of signal that gives the system practical value.
-    </p>
+    <p>The model correctly prioritized event-specific language such as “Evacuation”. This
+      is the kind of signal that gives the system practical value.</p>
   </div>
 </section>
 

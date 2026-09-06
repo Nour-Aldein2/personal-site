@@ -1,0 +1,96 @@
+/* One continuous decorative canvas behind BOTH the header and the content.
+   Simply deleting the border would leave a hard edge between two backgrounds. */
+body {
+  position: relative;
+  isolation: isolate;
+  --canvas-grid-size: 64px;
+  --canvas-grid-line: rgb(var(--accent-rgb) / 0.055);
+  --canvas-grid-edge: clamp(24px, 6vw, 120px);
+  --canvas-grid-end: 1080px;
+}
+:root[data-theme="dark"] body {
+  --canvas-grid-line: rgb(var(--accent-rgb) / 0.075);
+}
+:root:not([data-theme="dark"]) .page-shell,
+:root[data-theme="dark"] .page-shell {
+  background: transparent;
+}
+:root:not([data-theme="dark"]) .page-shell::before,
+:root[data-theme="dark"] .page-shell::before {
+  display: none;
+}
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  pointer-events: none;
+  max-height: 100%;
+}
+body::before {
+  z-index: -2;
+  height: 720px;
+  background:
+    radial-gradient(ellipse 58% 28rem at 13% 0%,
+      rgba(124, 39, 16, 0.095) 0%, rgba(124, 39, 16, 0.045) 34%,
+      rgba(124, 39, 16, 0.012) 58%, transparent 78%),
+    radial-gradient(ellipse 42% 22rem at 92% 6%,
+      rgba(124, 39, 16, 0.035) 0%, rgba(124, 39, 16, 0.012) 48%, transparent 76%);
+}
+:root[data-theme="dark"] body::before {
+  /* The approved warm header colours now dissolve DOWN into the page as well.
+     On scroll the original matte wash reappears on the sticky header itself. */
+  background: linear-gradient(90deg, transparent 0%,
+    var(--header-wash-left) 27%,
+    var(--header-wash-right) 67%, transparent 100%);
+  filter: saturate(0.70);
+  opacity: 0.92;
+  -webkit-mask-image: linear-gradient(to bottom,
+    #000 0, #000 20px, rgba(0,0,0,.84) 72px,
+    rgba(0,0,0,.5) 170px, rgba(0,0,0,.18) 300px, transparent 480px);
+  mask-image: linear-gradient(to bottom,
+    #000 0, #000 20px, rgba(0,0,0,.84) 72px,
+    rgba(0,0,0,.5) 170px, rgba(0,0,0,.18) 300px, transparent 480px);
+}
+body::after {
+  z-index: -1;
+  height: var(--canvas-grid-end);
+  background-image:
+    linear-gradient(to right, var(--canvas-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--canvas-grid-line) 1px, transparent 1px);
+  background-size: var(--canvas-grid-size) var(--canvas-grid-size);
+  background-position: center top;
+  -webkit-mask-image:
+    linear-gradient(to bottom, rgba(0,0,0,.55) 0, rgba(0,0,0,.92) 96px,
+      rgba(0,0,0,.82) 240px, rgba(0,0,0,.42) 560px, transparent var(--canvas-grid-end)),
+    linear-gradient(to right, transparent, #000 var(--canvas-grid-edge),
+      #000 calc(100% - var(--canvas-grid-edge)), transparent);
+  mask-image:
+    linear-gradient(to bottom, rgba(0,0,0,.55) 0, rgba(0,0,0,.92) 96px,
+      rgba(0,0,0,.82) 240px, rgba(0,0,0,.42) 560px, transparent var(--canvas-grid-end)),
+    linear-gradient(to right, transparent, #000 var(--canvas-grid-edge),
+      #000 calc(100% - var(--canvas-grid-edge)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+@media (max-width: 600px) {
+  body {
+    --canvas-grid-size: 48px;
+    --canvas-grid-line: rgb(var(--accent-rgb) / 0.04);
+    --canvas-grid-edge: 24px;
+    --canvas-grid-end: 1120px;
+  }
+  :root[data-theme="dark"] body {
+    --canvas-grid-line: rgb(var(--accent-rgb) / 0.055);
+  }
+  :root:not([data-theme="dark"]) body::before {
+    background: radial-gradient(ellipse 115% 24rem at 14% 0%,
+      rgba(124, 39, 16, 0.072) 0%, rgba(124, 39, 16, 0.03) 38%,
+      rgba(124, 39, 16, 0.008) 62%, transparent 82%);
+  }
+  :root[data-theme="dark"] body::before { opacity: 0.58; }
+}
+@media print, (prefers-contrast: more), (forced-colors: active) {
+  body::before, body::after { display: none; }
+}

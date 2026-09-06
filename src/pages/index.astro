@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Icon from "../components/Icon.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -10,9 +11,7 @@ import { absoluteSiteUrl, sitePath, siteSettings } from "../lib/site";
 const articles = sortArticles(
   await getCollection("articles", ({ data }) => !data.draft),
 );
-
 const featuredArticles = articles.filter((entry) => entry.data.featured).slice(0, 3);
-
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -37,7 +36,6 @@ const personSchema = {
   },
 };
 ---
-
 <BaseLayout
   title={`${siteSettings.authorName} | AI Engineer/Researcher`}
   description={siteSettings.siteDescription}
@@ -47,7 +45,7 @@ const personSchema = {
   schema={personSchema}
 >
   <div class="shell">
-    <section class="hero">
+    <section class="hero hero--borderless">
       <div class="hero-card">
         <p class="eyebrow">Portfolio</p>
         <h1>{siteSettings.authorName}</h1>
@@ -64,25 +62,15 @@ const personSchema = {
           This site showcases some examples of my end-to-end ML work and research, demonstrating
           my skills and interests across the diverse fields I am working on.
         </p>
-        <!--<div class="button-row">-->
-        <!--  <a-->
-        <!--    href={sitePath(siteSettings.cvFilePath)}-->
-        <!--    class="button-link button-link&#45;&#45;primary"-->
-        <!--    target="_blank"-->
-        <!--    rel="noopener"-->
-        <!--  >-->
-        <!--    View CV-->
-        <!--  </a>-->
-        <!--  <a href={sitePath("articles/")} class="button-link button-link&#45;&#45;secondary">-->
-        <!--    Read Articles-->
-        <!--  </a>-->
-        <!--</div>-->
       </div>
-
       <aside class="profile-panel">
         <img
           src={sitePath(siteSettings.authorImage)}
           alt={siteSettings.authorName}
+          width="580"
+          height="696"
+          fetchpriority="high"
+          decoding="async"
         />
         <div class="profile-panel__meta">
           <p class="eyebrow">Profiles</p>
@@ -94,7 +82,7 @@ const personSchema = {
               target="_blank"
               aria-label="GitHub"
             >
-              <i class="fa-brands fa-github" aria-hidden="true"></i>
+              <Icon name="github" />
               <span class="sr-only">GitHub</span>
             </a>
             <a
@@ -104,7 +92,7 @@ const personSchema = {
               target="_blank"
               aria-label="LinkedIn"
             >
-              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              <Icon name="linkedin" />
               <span class="sr-only">LinkedIn</span>
             </a>
             <a
@@ -112,22 +100,17 @@ const personSchema = {
               href={siteSettings.contactHref}
               aria-label="Contact"
             >
-              <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+              <Icon name="mail" />
               <span class="sr-only">Contact</span>
             </a>
           </div>
         </div>
       </aside>
     </section>
-
     <section class="page-section">
       <div class="section-heading section-heading--wide">
         <p class="eyebrow">Writing</p>
         <h2>Selected articles and case studies</h2>
-        <p>
-          Selected writing and technical case studies, including the current published
-          post on model explainability with BERT and LIME.
-        </p>
       </div>
       <div class="article-index-grid">
         {featuredArticles.map((article) => (
@@ -135,7 +118,6 @@ const personSchema = {
         ))}
       </div>
     </section>
-
     <section class="page-section">
       <div class="section-heading section-heading--wide">
         <p class="eyebrow">Projects</p>
@@ -153,3 +135,75 @@ const personSchema = {
     </section>
   </div>
 </BaseLayout>
+
+<style>
+/* BEGIN personal-site homepage design */
+  /* Homepage-specific dimensions. Shared palette and header rules live in
+     styles/theme.css and styles/header.css for every page. */
+  .hero--borderless {
+    grid-template-columns: minmax(0, 1.75fr) minmax(0, 0.9fr);
+  }
+
+  .hero--borderless .hero-card,
+  .hero--borderless .profile-panel {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .hero--borderless .hero-card {
+    color: var(--ink);
+  }
+
+  .hero--borderless .hero-card h1 {
+    color: var(--ink);
+    /* Exactly 4pt smaller than the original responsive name, at every width. */
+    font-size: calc(clamp(2.2rem, 5vw, 4rem) - 4pt);
+    line-height: 1.05;
+  }
+
+  .hero--borderless .hero-card p:not(.eyebrow) {
+    color: var(--article-copy, var(--ink));
+    line-height: 1.7;
+  }
+
+  .hero--borderless .hero-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .hero--borderless .hero-card .eyebrow {
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .hero--borderless .profile-panel {
+    width: min(100%, 290px);
+    justify-self: end;
+  }
+
+  .hero--borderless .profile-panel img {
+    border-radius: 0;
+  }
+
+  /* Keep secondary links legible if the existing commented-out buttons
+     are re-enabled later, now that the card backdrop is gone. */
+  .hero--borderless .button-link--secondary {
+    color: var(--accent-soft);
+    border-color: var(--border);
+    background: transparent;
+  }
+
+  @media (max-width: 900px) {
+    .hero--borderless {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero--borderless .profile-panel {
+      justify-self: start;
+    }
+  }
+/* END personal-site homepage design */
+</style>

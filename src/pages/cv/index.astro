@@ -1,21 +1,9 @@
 ---
-import { siteSettings } from "../../lib/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath, siteSettings } from "../../lib/site";
+const cvHref = sitePath(siteSettings.cvFilePath);
 ---
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0;url=../Noor_CV.pdf" />
-    <link rel="canonical" href="../Noor_CV.pdf" />
-    <title>{siteSettings.authorName} CV</title>
-  </head>
-  <body>
-    <main>
-      <p>
-        Redirecting to the CV PDF.
-        <a href="../Noor_CV.pdf">Continue</a>.
-      </p>
-    </main>
-  </body>
-</html>
+<BaseLayout title={`${siteSettings.authorName} CV`} description={`Curriculum vitae of ${siteSettings.authorName}.`} canonicalPath={siteSettings.cvFilePath}>
+  <Fragment slot="head"><meta http-equiv="refresh" content={`0;url=${cvHref}`} /></Fragment>
+  <section class="shell legacy-redirect"><h1>Curriculum vitae</h1><p>Redirecting to the CV PDF.</p><p><a class="button-link button-link--primary" href={cvHref}>Open CV</a></p></section>
+</BaseLayout>

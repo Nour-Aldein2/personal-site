@@ -1,14 +1,205 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0;url=Noor_CV.pdf" />
-    <link rel="canonical" href="Noor_CV.pdf" />
-    <title>Redirecting…</title>
-  </head>
-  <body>
-    <main>
-      <p>Redirecting to the CV PDF. <a href="Noor_CV.pdf">Continue</a>.</p>
-    </main>
-  </body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow"><meta name="theme-color" content="#ffffff">
+<meta http-equiv="refresh" content="0;url=Noor_CV.pdf"><link rel="canonical" href="Noor_CV.pdf">
+<title>Curriculum vitae | Noor Aldeen</title>
+<style>/* The approved palette, shared by every page, component and legacy redirect.
+   Light: white + #7C2710. Dark: warm charcoal + #CC9075.
+   Decorative washes and grids are in canvas.css, not individual pages. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-strong: #fbf6f4;
+  --ink: #302d2c;
+  --muted: #746d6a;
+  --border: rgba(124, 39, 16, 0.17);
+  --hairline: rgba(124, 39, 16, 0.12);
+  --accent: #7C2710;
+  --accent-rgb: 124 39 16;
+  --accent-soft: #95543f;
+  --on-accent: #ffffff;
+  --article-copy: #494341;
+  --code-bg: rgba(124, 39, 16, 0.065);
+  --input-bg: #ffffff;
+  --focus-outline: #7C2710;
+  --shadow: none;
+  --sage: #95543f;
+  --metadata: #77706d;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-heading: "Montserrat", system-ui, sans-serif;
+  --radius: 12px;
+  --content-width: min(1120px, calc(100% - 2rem));
+  --header-wash-left: transparent;
+  --header-wash-right: transparent;
+  --header-wash-opacity: 0;
+  --header-wash-saturation: 1;
+  --header-grain-opacity: 0;
+  --header-grain-strength: 1;
+  --header-text: var(--ink);
+  --header-secondary: var(--muted);
+  --header-link-active: var(--accent);
+  --header-focus: var(--focus-outline);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #181210;
+  --surface: #211916;
+  --surface-strong: #2b201b;
+  --ink: #f3eeeb;
+  --muted: #b7aca7;
+  --border: rgba(204, 144, 117, 0.23);
+  --hairline: rgba(204, 144, 117, 0.17);
+  --accent: #CC9075;
+  --accent-rgb: 204 144 117;
+  --accent-soft: #CC9075;
+  --on-accent: #181210;
+  --article-copy: #dbd2ce;
+  --code-bg: rgba(204, 144, 117, 0.1);
+  --input-bg: #211916;
+  --focus-outline: #CC9075;
+  --metadata: #a3a3a3;
+  --header-wash-left: rgba(191, 79, 24, 0.16);
+  --header-wash-right: rgba(123, 70, 47, 0.24);
+  --header-wash-opacity: 0.92;
+  --header-text: var(--ink);
+  --header-secondary: #b7aca7;
+  --header-link-active: var(--accent);
+  --header-focus: var(--focus-outline);
+  --header-wash-saturation: 0.70;
+  --header-grain-opacity: 0.045;
+  --sage: #a0b5a0;
+}
+/* A single background colour underneath the seamless decorative canvas. */
+html, body { background-color: var(--bg); }
+::selection { color: var(--on-accent); background: var(--accent); }
+
+/* One continuous decorative canvas behind BOTH the header and the content.
+   Simply deleting the border would leave a hard edge between two backgrounds. */
+body {
+  position: relative;
+  isolation: isolate;
+  --canvas-grid-size: 64px;
+  --canvas-grid-line: rgb(var(--accent-rgb) / 0.055);
+  --canvas-grid-edge: clamp(24px, 6vw, 120px);
+  --canvas-grid-end: 1080px;
+}
+:root[data-theme="dark"] body {
+  --canvas-grid-line: rgb(var(--accent-rgb) / 0.075);
+}
+:root:not([data-theme="dark"]) .page-shell,
+:root[data-theme="dark"] .page-shell {
+  background: transparent;
+}
+:root:not([data-theme="dark"]) .page-shell::before,
+:root[data-theme="dark"] .page-shell::before {
+  display: none;
+}
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  pointer-events: none;
+  max-height: 100%;
+}
+body::before {
+  z-index: -2;
+  height: 720px;
+  background:
+    radial-gradient(ellipse 58% 28rem at 13% 0%,
+      rgba(124, 39, 16, 0.095) 0%, rgba(124, 39, 16, 0.045) 34%,
+      rgba(124, 39, 16, 0.012) 58%, transparent 78%),
+    radial-gradient(ellipse 42% 22rem at 92% 6%,
+      rgba(124, 39, 16, 0.035) 0%, rgba(124, 39, 16, 0.012) 48%, transparent 76%);
+}
+:root[data-theme="dark"] body::before {
+  /* The approved warm header colours now dissolve DOWN into the page as well.
+     On scroll the original matte wash reappears on the sticky header itself. */
+  background: linear-gradient(90deg, transparent 0%,
+    var(--header-wash-left) 27%,
+    var(--header-wash-right) 67%, transparent 100%);
+  filter: saturate(0.70);
+  opacity: 0.92;
+  -webkit-mask-image: linear-gradient(to bottom,
+    #000 0, #000 20px, rgba(0,0,0,.84) 72px,
+    rgba(0,0,0,.5) 170px, rgba(0,0,0,.18) 300px, transparent 480px);
+  mask-image: linear-gradient(to bottom,
+    #000 0, #000 20px, rgba(0,0,0,.84) 72px,
+    rgba(0,0,0,.5) 170px, rgba(0,0,0,.18) 300px, transparent 480px);
+}
+body::after {
+  z-index: -1;
+  height: var(--canvas-grid-end);
+  background-image:
+    linear-gradient(to right, var(--canvas-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--canvas-grid-line) 1px, transparent 1px);
+  background-size: var(--canvas-grid-size) var(--canvas-grid-size);
+  background-position: center top;
+  -webkit-mask-image:
+    linear-gradient(to bottom, rgba(0,0,0,.55) 0, rgba(0,0,0,.92) 96px,
+      rgba(0,0,0,.82) 240px, rgba(0,0,0,.42) 560px, transparent var(--canvas-grid-end)),
+    linear-gradient(to right, transparent, #000 var(--canvas-grid-edge),
+      #000 calc(100% - var(--canvas-grid-edge)), transparent);
+  mask-image:
+    linear-gradient(to bottom, rgba(0,0,0,.55) 0, rgba(0,0,0,.92) 96px,
+      rgba(0,0,0,.82) 240px, rgba(0,0,0,.42) 560px, transparent var(--canvas-grid-end)),
+    linear-gradient(to right, transparent, #000 var(--canvas-grid-edge),
+      #000 calc(100% - var(--canvas-grid-edge)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+@media (max-width: 600px) {
+  body {
+    --canvas-grid-size: 48px;
+    --canvas-grid-line: rgb(var(--accent-rgb) / 0.04);
+    --canvas-grid-edge: 24px;
+    --canvas-grid-end: 1120px;
+  }
+  :root[data-theme="dark"] body {
+    --canvas-grid-line: rgb(var(--accent-rgb) / 0.055);
+  }
+  :root:not([data-theme="dark"]) body::before {
+    background: radial-gradient(ellipse 115% 24rem at 14% 0%,
+      rgba(124, 39, 16, 0.072) 0%, rgba(124, 39, 16, 0.03) 38%,
+      rgba(124, 39, 16, 0.008) 62%, transparent 82%);
+  }
+  :root[data-theme="dark"] body::before { opacity: 0.58; }
+}
+@media print, (prefers-contrast: more), (forced-colors: active) {
+  body::before, body::after { display: none; }
+}
+
+body{margin:0;color:var(--ink);font-family:var(--font-body);line-height:1.6}main{max-width:50rem;margin:4rem auto;padding:1rem}a{color:var(--accent);text-underline-offset:.2em}a:focus-visible{outline:2px solid var(--focus-outline);outline-offset:4px}</style>
+<script>
+      (() => {
+        const key = "theme-preference";
+        const root = document.documentElement;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+        const normalise = value => ["light", "dark", "auto"].includes(value) ? value : "auto";
+        const read = () => { try { return normalise(localStorage.getItem(key)); } catch { return "auto"; } };
+        const apply = value => {
+          const preference = normalise(value);
+          const resolvedTheme = preference === "auto" ? (media.matches ? "dark" : "light") : preference;
+          root.dataset.themePreference = preference;
+          root.dataset.theme = resolvedTheme;
+          root.style.colorScheme = resolvedTheme;
+          meta?.setAttribute("content", resolvedTheme === "dark" ? "#181210" : "#ffffff");
+          window.dispatchEvent(new CustomEvent("themechange", { detail: { preference, resolvedTheme } }));
+        };
+        window.__applyThemePreference = value => {
+          const preference = normalise(value);
+          try { localStorage.setItem(key, preference); } catch {}
+          apply(preference);
+        };
+        const onSystemChange = () => { if (root.dataset.themePreference === "auto") apply("auto"); };
+        if (typeof media.addEventListener === "function") media.addEventListener("change", onSystemChange);
+        else if (typeof media.addListener === "function") media.addListener(onSystemChange);
+        window.addEventListener("storage", event => { if (event.key === key || event.key === null) apply(read()); });
+        window.addEventListener("pageshow", () => apply(read()));
+        apply(read());
+      })();
+    </script></head>
+<body><main><h1>Curriculum vitae</h1><p><a href="Noor_CV.pdf">Continue to the CV PDF</a>.</p></main></body></html>

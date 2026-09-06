@@ -1,9 +1,4 @@
 ---
 import { siteSettings } from "../lib/site";
 ---
-
-<footer class="site-footer">
-  <div class="shell site-footer__inner">
-    <p>© 2026 {siteSettings.authorName}</p>
-  </div>
-</footer>
+<footer class="site-footer"><div class="shell site-footer__inner"><p>© {new Date().getUTCFullYear()} {siteSettings.authorName}</p></div></footer>
