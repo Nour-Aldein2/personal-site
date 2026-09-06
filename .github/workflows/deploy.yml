@@ -19,8 +19,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
-      BASE_PATH: ${{ vars.BASE_PATH || format('/{0}', github.event.repository.name) }}
+      # This site is served at nourd.uk/, NOT nourd.uk/personal-site/.
+      # Explicit values prevent old repository variables from adding a prefix.
+      SITE_URL: 'https://nourd.uk'
+      BASE_PATH: '/'
       PUBLIC_CONTACT_FORM_ACTION: ${{ vars.PUBLIC_CONTACT_FORM_ACTION }}
     steps:
       - name: Checkout
