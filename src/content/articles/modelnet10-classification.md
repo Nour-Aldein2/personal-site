@@ -4,7 +4,7 @@ description: "A custom implementation of DGCNN using EdgeConv from PyTorch Geome
 slug: "3d-classification-dgcnn"
 publishDate: 2026-09-07
 updatedDate: 2026-09-07
-templateType: "analysis"
+templateType: "case-study"
 tags:
   - 3D
   - GNN
