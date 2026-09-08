@@ -15,7 +15,7 @@ draft: false
 heroImage: "/images/3d_classification_DGCNN/project_cover.png"
 ---
 
-## Overview
+## Introduction
 This article aims to review and reflect on `EdgeConv` operation and **DGCNN** to develop an understanding of the method and when is it suitable. In fact, while working on the new architecture `TopoLineArt` (to be published) I started working on reproducing many GNN operations. **DGCNN** is an interesting method because it eliminates the need to figure out the relationships between nodes while preparing a graph dataset. Instead, it is sufficient to start with kNN graph, and then the model will learn how nodes are connected while it's learning the task (in the case of Wang et al. (2019), the task is classification).
 
 This case study aims to reviewing this method, and reimplementing DGCNN using PyTorch Geometric `EdgeCon` to classify the 3D objects in **ModelNet10** dataset. In particular, this article aims to reflect on the method and its applicability, while walking throw and analysing the task, and model's performance.
