@@ -31,7 +31,6 @@ This case study aims to reviewing this method, and reimplementing DGCNN using Py
         alt="Class count using the official ModelNet10 train-test split"
       />
     </a>
-
     <a href="../../images/3d_classification_DGCNN/class_count_3_splits.svg" class="figure-link">
       <img
         src="../../images/3d_classification_DGCNN/class_count_3_splits.svg"
