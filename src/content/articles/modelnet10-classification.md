@@ -21,6 +21,29 @@ This article aims to review and reflect on `EdgeConv` operation and **DGCNN** to
 This case study aims to reviewing this method, and reimplementing DGCNN using PyTorch Geometric `EdgeCon` to classify the 3D objects in **ModelNet10** dataset. In particular, this article aims to reflect on the method and its applicability, while walking throw and analysing the task, and model's performance.
 
 ## Dataset
+**ModelNet10** was the chosen dataset for this case study. This stems from different factors, the smaller size of the dataset compared to ModelNet40, which allows for faster training and evaluation that is sufficient for the purpose of this project. The dataset itself has 4,899 CAD objects saved in [Object File Format](https://segeval.cs.princeton.edu/public/off_format.html) which stores information about the faces, vertices, and edges of the object. Out of the box, the dataset has two splits; 3,991 for training and 908 testing.
+
+<figure>
+  <div class="figure-row">
+    <a href="../../images/3d_classification_DGCNN/class_count_2_splits.svg" class="figure-link">
+      <img
+        src="../../images/3d_classification_DGCNN/class_count_2_splits.svg"
+        alt="Class count using the official ModelNet10 train-test split"
+      />
+    </a>
+
+    <a href="../../images/3d_classification_DGCNN/class_count_3_splits.svg" class="figure-link">
+      <img
+        src="../../images/3d_classification_DGCNN/class_count_3_splits.svg"
+        alt="Class count after resplitting the ModelNet10 dataset"
+      />
+    </a>
+  </div>
+
+  <figcaption>
+    Class balance in ModelNet10: official split (left) and resplit dataset (right).
+  </figcaption>
+</figure>
 
 ## Method
 
