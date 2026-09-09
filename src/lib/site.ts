@@ -9,7 +9,7 @@ export const siteSettings = {
   contactHref: "mailto:contact@nourd.uk",
   location: "Bath, UK",
   sameAs: ["https://github.com/Nour-Aldein2", "https://www.linkedin.com/in/nour-aldein-b15361123/"],
-  alternateNames: ["Nour Aldein Almusleh", "Noor Almusleh", "Nour Aldeen", "Nour Aldein", "Noor Aldein", "Nour Aldein Almusleh"],
+  alternateNames: ["Noor Almusleh", "Nour Aldein Almusleh", "Nour Aldeen Almusleh", "Nour Aldin Almusleh", "Noor Aldin Almusleh", "Nour Almusleh", "Noor Aldeen", "Noor Aldein", "Noor Aldin", "Nour Aldeen", "Nour Aldein", "Nour Aldin"],
   keywords: ["Noor Aldeen Almusleh", "Noor Almusleh", "Nour Aldeen", "Nour Aldein", "Noor Aldein", "Nour Aldein Almusleh", "AI researcher", "AI engineer", "AI/ML engineer", "machine learning engineer", "MSc Artificial Intelligence", "MSc AI", "University of Bath", "reinforcement learning", "computer vision", "natural language processing", "NLP", "MLOps", "statistical modelling", "statistical modeling", "control and optimisation", "control and optimization", "computer graphics", "scientific computing", "generative modelling", "generative modeling", "chemical recipe optimisation", "chemical recipe optimization", "MXene"],
 };
 function ensureTrailingSlash(value: string) { return value.endsWith("/") ? value : `${value}/`; }
