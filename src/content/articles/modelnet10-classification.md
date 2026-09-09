@@ -23,14 +23,35 @@ This case study aims to reviewing this method, and reimplementing DGCNN using Py
 ## Dataset
 **ModelNet10** was the chosen dataset for this case study. This stems from different factors, the smaller size of the dataset compared to ModelNet40, which allows for faster training and evaluation that is sufficient for the purpose of this project. The dataset itself has 4,899 CAD objects saved in [Object File Format](https://segeval.cs.princeton.edu/public/off_format.html) which stores information about the faces, vertices, and edges of the object. Out of the box, the dataset has two splits; 3,991 for training and 908 testing.
 
-<figure class="figure-pair">
-  <a href="../../images/3d_classification_DGCNN/class_count_2_splits.svg" class="figure-link">
-    <img src="../../images/3d_classification_DGCNN/class_count_2_splits.svg" alt="Class count; official splits" />
-  </a>
-  <a href="../../images/3d_classification_DGCNN/class_count_3_splits.svg" class="figure-link">
-    <img src="../../images/3d_classification_DGCNN/class_count_3_splits.svg" alt="Class count; after resplitting" />
-  </a>
-  <figcaption>Class balance in the training dataset used for the case study.</figcaption>
+<figure>
+  <div style="display: flex; gap: 1rem; width: 100%; align-items: flex-start;">
+    <a
+      href="../../images/3d_classification_DGCNN/class_count_2_splits.svg"
+      class="figure-link"
+      style="flex: 1 1 0; min-width: 0; max-width: none;"
+    >
+      <img
+        src="../../images/3d_classification_DGCNN/class_count_2_splits.svg"
+        alt="Class count using the official ModelNet10 train-test split"
+        style="width: 100%; height: auto; max-width: none;"
+      />
+    </a>
+    <a
+      href="../../images/3d_classification_DGCNN/class_count_3_splits.svg"
+      class="figure-link"
+      style="flex: 1 1 0; min-width: 0; max-width: none;"
+    >
+      <img
+        src="../../images/3d_classification_DGCNN/class_count_3_splits.svg"
+        alt="Class count after resplitting the ModelNet10 dataset"
+        style="width: 100%; height: auto; max-width: none;"
+      />
+    </a>
+  </div>
+
+  <figcaption>
+    Class balance in ModelNet10: official split (left) and resplit dataset (right).
+  </figcaption>
 </figure>
 
 ## Method
