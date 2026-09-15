@@ -1,11 +1,18 @@
 ---
-interface Props { headings: {depth:number; slug:string; text:string}[]; }
-const headings = Astro.props.headings.filter(heading => heading.depth <= 3);
+import type { MarkdownHeading } from "astro";
+import ArticleTocList from "./ArticleTocList.astro";
+import { buildToc } from "../lib/toc.js";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const items = buildToc(Astro.props.headings);
 ---
-{headings.length > 0 && (
+
+{items.length > 0 && (
   <aside class="content-card article-toc" aria-label="On this page">
-    <p class="article-toc__title">On this page</p><ol>
-    {headings.map(heading => <li class={`article-toc__item article-toc__item--depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
-    </ol>
+    <p class="article-toc__title">On this page</p>
+    <ArticleTocList items={items} />
   </aside>
 )}
