@@ -343,6 +343,67 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
 </figure>
 
 ### t-SNE
+<figure>
+  <div style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+    width: 100%;
+  ">
+    <a
+      href="/interactive/3d_classification_DGCNN/feature_space_tsne_baseline.html"
+      target="_blank"
+      rel="noopener"
+      class="figure-link"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/tsne_baseline.png"
+        alt="t-SNE projection of the PointNet baseline feature space"
+        style="width: 100%; height: auto;"
+      />
+    </a>
+    <a
+      href="/interactive/3d_classification_DGCNN/feature_space_tsne_512_10.html"
+      target="_blank"
+      rel="noopener"
+      class="figure-link"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/tsne_512_10.png"
+        alt="t-SNE projection for DGCNN using 512 points and k=10"
+        style="width: 100%; height: auto;"
+      />
+    </a>
+    <a
+      href="/interactive/3d_classification_DGCNN/feature_space_tsne_1024_20.html"
+      target="_blank"
+      rel="noopener"
+      class="figure-link"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/tsne_1024_20.png"
+        alt="t-SNE projection for DGCNN using 1024 points and k=20"
+        style="width: 100%; height: auto;"
+      />
+    </a>
+    <a
+      href="/interactive/3d_classification_DGCNN/feature_space_tsne_2048_20.html"
+      target="_blank"
+      rel="noopener"
+      class="figure-link"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/tsne_2048_20.png"
+        alt="t-SNE projection for DGCNN using 2048 points and k=20"
+        style="width: 100%; height: auto;"
+      />
+    </a>
+  </div>
+  <figcaption>
+    Figure X: t-SNE projections of the learned feature spaces. Select a figure
+    to open the interactive visualization and inspect individual point clouds.
+  </figcaption>
+</figure>
 
 ## Conclusions and Limitations
 
