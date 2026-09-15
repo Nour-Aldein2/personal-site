@@ -303,12 +303,17 @@ The table below shows the classification performance on the ModelNet10 test set 
 
 Figure 5 compares the overall test accuracy of the four configurations. The 512-point model with $k=10$ achieves the highest accuracy of $0.96$, followed by the 1024-point model with $k=20$ at $0.95$. The baseline achieves an accuracy of $0.92$, while the 2048-point model with $k=20$ achieves the lowest accuracy of $0.91$. These results show that increasing the number of input points does not necessarily improve classification performance. 
 
-<figure style="margin: 0; text-align: center;">
-  <a href="/images/3d_classification_DGCNN/overall_accuracy.png" class="figure-link">
-    <img src="/images/3d_classification_DGCNN/overall_accuracy.png" alt="Overall test accuracy across DGCNN configurations" style="width: 85%; height: auto;" />
-  </a>
-  <figcaption style="margin-top: 10px;"><strong>Figure 5:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
-</figure>
+[//]: # (<figure style="margin: 0; text-align: center;">)
+
+[//]: # (  <a href="/images/3d_classification_DGCNN/overall_accuracy.png" class="figure-link">)
+
+[//]: # (    <img src="/images/3d_classification_DGCNN/overall_accuracy.png" alt="Overall test accuracy across DGCNN configurations" style="width: 85%; height: auto;" />)
+
+[//]: # (  </a>)
+
+[//]: # (  <figcaption style="margin-top: 10px;"><strong>Figure 5:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>)
+
+[//]: # (</figure>)
 
 Figure 6 provides a class-level comparison of precision, recall, and F1-score. The 512-point model with $k=10$ generally achieves the most consistent performance across the ten classes, with particularly strong results for Bathtub, Bed, Chair, Monitor, Sofa, and Toilet. The largest differences between configurations appear for the more challenging classes, particularly Desk, Dresser, and Night Stand. For example, the 2048-point model achieves a recall of $0.66$ for Desk and a precision of $0.66$ for Dresser. This suggests that the differences in overall performance are largely driven by a small number of difficult classes rather than by a uniform change across all classes.
 <figure style="margin: 0; text-align: center;">
@@ -322,25 +327,43 @@ Figure 6 provides a class-level comparison of precision, recall, and F1-score. T
 
 Figure X below shows that all models struggled with `Night Stand` objects, frequently confusing them with `Dresser`. A similar pattern is observed for the `Desk` class, where some objects are misclassified as `Table`. The consistency of these errors across different model configurations suggests an inherent challenge in distinguishing these classes within the dataset, which I investigate further using t-SNE analysis below.
 
-<figure style="margin: 0; text-align: center;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px;">
-    <a href="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" class="figure-link">
-      <img src="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" alt="Confusion matrix for the baseline DGCNN experiment" style="width: 100%; height: auto;" />
-    </a>
-    <a href="/images/3d_classification_DGCNN/confusion_matrix_512.png" class="figure-link">
-      <img src="/images/3d_classification_DGCNN/confusion_matrix_512.png" alt="Confusion matrix for the DGCNN experiment with 512 points" style="width: 100%; height: auto;" />
-    </a>
-    <a href="/images/3d_classification_DGCNN/confusion_matrix_1024.png" class="figure-link">
-      <img src="/images/3d_classification_DGCNN/confusion_matrix_1024.png" alt="Confusion matrix for the DGCNN experiment with 1024 points" style="width: 100%; height: auto;" />
-    </a>
-    <a href="/images/3d_classification_DGCNN/confusion_matrix_2048.png" class="figure-link">
-      <img src="/images/3d_classification_DGCNN/confusion_matrix_2048.png" alt="Confusion matrix for the DGCNN experiment with 2048 points" style="width: 100%; height: auto;" />
-    </a>
-  </div>
-  <figcaption style="margin-top: 10px;">
-    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.
-  </figcaption>
-</figure>
+[//]: # (<figure style="margin: 0; text-align: center;">)
+
+[//]: # (  <div style="display: grid; grid-template-columns: repeat&#40;auto-fit, minmax&#40;min&#40;100%, 280px&#41;, 1fr&#41;&#41;; gap: 12px;">)
+
+[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" class="figure-link">)
+
+[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" alt="Confusion matrix for the baseline DGCNN experiment" style="width: 100%; height: auto;" />)
+
+[//]: # (    </a>)
+
+[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_512.png" class="figure-link">)
+
+[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_512.png" alt="Confusion matrix for the DGCNN experiment with 512 points" style="width: 100%; height: auto;" />)
+
+[//]: # (    </a>)
+
+[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_1024.png" class="figure-link">)
+
+[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_1024.png" alt="Confusion matrix for the DGCNN experiment with 1024 points" style="width: 100%; height: auto;" />)
+
+[//]: # (    </a>)
+
+[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_2048.png" class="figure-link">)
+
+[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_2048.png" alt="Confusion matrix for the DGCNN experiment with 2048 points" style="width: 100%; height: auto;" />)
+
+[//]: # (    </a>)
+
+[//]: # (  </div>)
+
+[//]: # (  <figcaption style="margin-top: 10px;">)
+
+[//]: # (    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model &#40;top left&#41; and experiments using 512 &#40;top right&#41;, 1024 &#40;bottom left&#41;, and 2048 &#40;bottom right&#41; points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.)
+
+[//]: # (  </figcaption>)
+
+[//]: # (</figure>)
 
 ### t-SNE
 
