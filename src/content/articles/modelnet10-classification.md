@@ -357,7 +357,7 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
       class="figure-link"
     >
       <img
-        src="/images/3d_classification_DGCNN/tsne_baseline.png"
+        src="/images/3d_classification_DGCNN/feature_space_tsne_baseline.png"
         alt="t-SNE projection of the PointNet baseline feature space"
         style="width: 100%; height: auto;"
       />
@@ -369,7 +369,7 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
       class="figure-link"
     >
       <img
-        src="/images/3d_classification_DGCNN/tsne_512_10.png"
+        src="/images/3d_classification_DGCNN/feature_space_tsne_512.png"
         alt="t-SNE projection for DGCNN using 512 points and k=10"
         style="width: 100%; height: auto;"
       />
@@ -381,7 +381,7 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
       class="figure-link"
     >
       <img
-        src="/images/3d_classification_DGCNN/tsne_1024_20.png"
+        src="/images/3d_classification_DGCNN/feature_space_tsne_1024.png"
         alt="t-SNE projection for DGCNN using 1024 points and k=20"
         style="width: 100%; height: auto;"
       />
@@ -393,7 +393,7 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
       class="figure-link"
     >
       <img
-        src="/images/3d_classification_DGCNN/tsne_2048_20.png"
+        src="/images/3d_classification_DGCNN/feature_space_tsne_2048.png"
         alt="t-SNE projection for DGCNN using 2048 points and k=20"
         style="width: 100%; height: auto;"
       />
