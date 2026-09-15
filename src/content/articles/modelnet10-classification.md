@@ -111,127 +111,12 @@ where $f$ is any function (e.g. a neural network), $A$ is the adjacency matrix, 
 $$
 F(PX, PAP^T) = P F(X, A)
 $$
-<div align="center">
-
-<svg viewBox="0 0 900 390" xmlns="http://www.w3.org/2000/svg" style="display: block; width: 100%; height: auto; max-width: 900px; margin: 0 auto;">
-  <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#222"/>
-    </marker>
-  </defs>
-  <!-- ================= PERMUTATION INVARIANCE ================= -->
-  <text x="220" y="28" text-anchor="middle"
-        font-family="Arial, sans-serif" font-size="22" font-weight="600">
-    Permutation Invariance
-  </text>
-  <rect x="15" y="45" width="410" height="320" rx="12"
-        fill="none" stroke="#777" stroke-width="1.5"
-        stroke-dasharray="8 7"/>
-  <!-- Top graph: B / A C -->
-  <line x1="105" y1="85" x2="65" y2="145" stroke="#333" stroke-width="1.6"/>
-  <line x1="105" y1="85" x2="145" y2="145" stroke="#333" stroke-width="1.6"/>
-  <line x1="65" y1="145" x2="145" y2="145" stroke="#333" stroke-width="1.6"/>
-  <circle cx="105" cy="85" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="65" cy="145" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="145" cy="145" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <text x="105" y="86" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">B</text>
-  <text x="65" y="146" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">A</text>
-  <text x="145" y="146" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">C</text>
-  <line x1="180" y1="116" x2="280" y2="116"
-        stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="230" y="100" text-anchor="middle"
-        font-family="serif" font-size="21" font-style="italic">f</text>
-  <text x="330" y="122" text-anchor="middle"
-        font-family="serif" font-size="22" font-style="italic">λ</text>
-  <!-- Bottom graph: A / C B -->
-  <line x1="105" y1="220" x2="65" y2="280" stroke="#333" stroke-width="1.6"/>
-  <line x1="105" y1="220" x2="145" y2="280" stroke="#333" stroke-width="1.6"/>
-  <line x1="65" y1="280" x2="145" y2="280" stroke="#333" stroke-width="1.6"/>
-  <circle cx="105" cy="220" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="65" cy="280" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="145" cy="280" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <text x="105" y="221" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">A</text>
-  <text x="65" y="281" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">C</text>
-  <text x="145" y="281" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">B</text>
-  <line x1="180" y1="251" x2="280" y2="251"
-        stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="230" y="235" text-anchor="middle"
-        font-family="serif" font-size="21" font-style="italic">f</text>
-  <text x="330" y="257" text-anchor="middle"
-        font-family="serif" font-size="22" font-style="italic">λ</text>
-  <!-- ================= PERMUTATION EQUIVARIANCE ================= -->
-  <text x="675" y="28" text-anchor="middle"
-        font-family="Arial, sans-serif" font-size="22" font-weight="600">
-    Permutation Equivariance
-  </text>
-  <rect x="470" y="45" width="415" height="320" rx="12"
-        fill="none" stroke="#777" stroke-width="1.5"
-        stroke-dasharray="8 7"/>
-  <!-- Top graph: A / C, B right -->
-  <line x1="535" y1="80" x2="535" y2="148" stroke="#333" stroke-width="1.6"/>
-  <line x1="535" y1="80" x2="600" y2="114" stroke="#333" stroke-width="1.6"/>
-  <line x1="535" y1="148" x2="600" y2="114" stroke="#333" stroke-width="1.6"/>
-  <circle cx="535" cy="80" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="535" cy="148" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="600" cy="114" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <text x="535" y="81" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">A</text>
-  <text x="535" y="149" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">C</text>
-  <text x="600" y="115" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">B</text>
-  <line x1="635" y1="114" x2="700" y2="114"
-        stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="668" y="98" text-anchor="middle"
-        font-family="serif" font-size="21" font-style="italic">f</text>
-  <!-- [alpha beta gamma]^T -->
-  <rect x="735" y="62" width="72" height="105" rx="5"
-        fill="white" stroke="#222" stroke-width="1.5"/>
-  <line x1="735" y1="97" x2="807" y2="97" stroke="#999"/>
-  <line x1="735" y1="132" x2="807" y2="132" stroke="#999"/>
-  <text x="771" y="80" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">α</text>
-  <text x="771" y="115" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">β</text>
-  <text x="771" y="150" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">γ</text>
-  <!-- Bottom graph: C / A, B right -->
-  <line x1="535" y1="215" x2="535" y2="283" stroke="#333" stroke-width="1.6"/>
-  <line x1="535" y1="215" x2="600" y2="249" stroke="#333" stroke-width="1.6"/>
-  <line x1="535" y1="283" x2="600" y2="249" stroke="#333" stroke-width="1.6"/>
-  <circle cx="535" cy="215" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="535" cy="283" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <circle cx="600" cy="249" r="19" fill="white" stroke="#222" stroke-width="1.6"/>
-  <text x="535" y="216" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">C</text>
-  <text x="535" y="284" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">A</text>
-  <text x="600" y="250" text-anchor="middle" dominant-baseline="middle"
-        font-family="Arial, sans-serif" font-size="16">B</text>
-  <line x1="635" y1="249" x2="700" y2="249"
-        stroke="#222" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="668" y="233" text-anchor="middle"
-        font-family="serif" font-size="21" font-style="italic">f</text>
-  <!-- [gamma beta alpha]^T -->
-  <rect x="735" y="197" width="72" height="105" rx="5"
-        fill="white" stroke="#222" stroke-width="1.5"/>
-  <line x1="735" y1="232" x2="807" y2="232" stroke="#999"/>
-  <line x1="735" y1="267" x2="807" y2="267" stroke="#999"/>
-  <text x="771" y="215" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">γ</text>
-  <text x="771" y="250" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">β</text>
-  <text x="771" y="285" text-anchor="middle" dominant-baseline="middle"
-        font-family="serif" font-size="20">α</text>
-</svg>
-
-</div>
+<figure>
+  <a href="/images/3d_classification_DGCNN/permutation_invariance_equivariance.svg" class="figure-link">
+    <img src="/images/3d_classification_DGCNN/permutation_invariance_equivariance.svg" alt="Classes statistics" />
+  </a>
+  <figcaption>Figure 2: Per class and per split distribution of the dataset.</figcaption>
+</figure>
 
 For more details about learning on graphs, feel free to refer to Hamilton (2020) or Bronstein et al. (2021). In their work, Wang et al. (2019) use the points in the point cloud as nodes, while the edges are selected to connect a node to its $k$ nearest neighbours, which allows them to use the message passing algorithm to aggregate information between nodes to update edge features: $\mathbf{e}_{ij} = h_\Theta(\mathbf{x}_i, \mathbf{x}_j)$, where $h_\Theta: \mathbb{R}^F \times \mathbb{R}^F \rightarrow \mathbb{R}^F$, with $F$ being the feature space size, $h$ being a non-linear function, and $\Theta$ being learnable parameters.
 
@@ -343,6 +228,9 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
 </figure>
 
 ### t-SNE
+
+t-SNE (t-distributed Stochastic Neighbor Embedding) is a nonlinear dimensionality-reduction technique commonly used to visualise high-dimensional data in two dimensions. It aims to preserve local neighbourhood relationships, such that samples that are similar in the original feature space tend to appear close together in the resulting projection. In this case study, t-SNE is used to visualise the learned feature representations produced by the baseline and DGCNN models for the ModelNet10 test set. This allows us to qualitatively examine how well the models separate the different object classes in their latent spaces and to identify regions where classes overlap. In particular, the visualisation can help explain some of the confusion observed between similar classes, such as `Desk`, `Dresser`, `Night Stand`, and `Table`, by showing whether their learned representations occupy nearby or overlapping regions. Because t-SNE is primarily a visualisation method, the absolute distances and global arrangement of clusters should not be interpreted quantitatively; the focus is instead on the local structure and degree of class separation.
+
 <figure>
   <div style="
     display: grid;
