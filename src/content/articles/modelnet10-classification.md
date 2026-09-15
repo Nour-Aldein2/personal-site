@@ -326,6 +326,9 @@ Figure 6 provides a class-level comparison of precision, recall, and F1-score. T
 </figure>
 
 ### Qualitative
+
+Figure x below shows the 
+
 <figure style="margin: 0; text-align: center;">
   <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
     <a href="../../images/3d_classification_DGCNN/confusion_matrix_baseline.png" class="figure-link">
@@ -342,11 +345,11 @@ Figure 6 provides a class-level comparison of precision, recall, and F1-score. T
     </a>
   </div>
   <figcaption style="margin-top: 10px;">
-    <strong>Figure 4:</strong> Normalized confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.
+    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.
   </figcaption>
 </figure>
 
-### Analysis
+### t-SNE
 
 ## Conclusions and Limitations
 
