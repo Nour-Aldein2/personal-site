@@ -346,14 +346,18 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
 
 ## Conclusions and Limitations
 
-Previously I highlighted this point:
+Working with point could data and reproducing this paper has been an interesting experience. Many lessons were learnd. The most important ones related to the nature of the update done by `EdgeConv` operation, and working with 3D data. Such point cloud reminds me of the stars in the sky, excpt for the fact that stars are often studied in 6D (i.e. phase space) rather than 3D. Still, the method presented in this paper present a unique opportunity to implempt and adapt this method to studing the nature of dark matter, similar to what was done in Ma et al. (2025). I argue that the use on `EdgeConv` and DGCNN might be a better option that using `GCN` operation. Previously I highlighted this point:
 >It is worth highlighting that this entire operation is *permutation* and *partial translation* invariant. In this way, the model not only learns how to extract local geometric features and how to group points in a point cloud; therefore, distances in deeper layers carry semantic information over long distances in the original embedding.
 
 I believe such a technique could have important applications in astrophysics and cosmology, particularly if it were paired with a physics objective (e.g. a loss function). It could help characterize the relationships between stars in a stellar stream (e.g. [GD-1](https://en.wikipedia.org/wiki/GD-1)) in a high-dimensional feature space and identify perturbations in the stream. This could, in turn, help determine whether observed structures such as gaps and spurs are consistent with interactions with dark-matter subhalos.
+
+One limitiation of this work is that it is not turlly "dynamic". In fact, the only thing that is dynamic in this paper is the evolution of the connections between nodes, and the notion of a node "neighbour". A trully dynmic graph will allow for creation and anhilation of nodes and edges rather than having a fixed number of both (indeed DGCNN changes "who your neighbours are" not "how many neighbours you have").
 
 ## References
 Bronstein, M.M., Bruna, J., Cohen, T. and Veličković, P., 2021. Geometric deep learning: Grids, groups, graphs, geodesics, and gauges. arXiv preprint arXiv:2104.13478.
 
 Hamilton, W.L., 2020. Graph Representation Learning. Synthesis Lectures on Artificial Intelligence and Machine Learning, 14(3), pp.1–159.
+
+Ma, P.X., Rogers, K.K., Li, T.S., Hložek, R., Webb, J.J., Huang, R. and Meunier, J., 2025. Toward Characterizing Dark Matter Subhalo Perturbations in Stellar Streams with Graph Neural Networks. The Astrophysical Journal, 987(1), p.96.
 
 Wang, Y., Sun, Y., Liu, Z., Sarma, S.E., Bronstein, M.M. and Solomon, J.M., 2019. Dynamic graph cnn for learning on point clouds. ACM Transactions on Graphics (tog), 38(5), pp.1-12.
