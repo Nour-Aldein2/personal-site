@@ -15,41 +15,25 @@ draft: false
 heroImage: "/images/3d_classification_DGCNN/project_cover.png"
 ---
 
-[//]: # (<style>)
+<style>
+figure {
+  max-width: 100%;
+}
 
-[//]: # (figure {)
+figure img,
+figure svg {
+  max-width: 100%;
+  height: auto;
+}
 
-[//]: # (  max-width: 100%;)
-
-[//]: # (})
-
-[//]: # ()
-[//]: # (figure img,)
-
-[//]: # (figure svg {)
-
-[//]: # (  max-width: 100%;)
-
-[//]: # (  height: auto;)
-
-[//]: # (})
-
-[//]: # ()
-[//]: # (table {)
-
-[//]: # (  display: block;)
-
-[//]: # (  width: 100%;)
-
-[//]: # (  max-width: 100%;)
-
-[//]: # (  overflow-x: auto;)
-
-[//]: # (  -webkit-overflow-scrolling: touch;)
-
-[//]: # (})
-
-[//]: # (</style>)
+table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>
 
 ## Introduction
 This article aims to review and reflect on `EdgeConv` operation and **DGCNN** to develop an understanding of the method and when is it suitable. In fact, while working on the new architecture `TopoLineArt` (to be published) I started working on reproducing many GNN operations. **DGCNN** is an interesting method because it eliminates the need to figure out the relationships between nodes while preparing a graph dataset. Instead, it is sufficient to start with kNN graph, and then the model will learn how nodes are connected while it's learning the task (in the case of Wang et al. (2019), the task is classification).
@@ -59,78 +43,45 @@ This case study aims to reviewing this method, and reimplementing DGCNN using Py
 ## Dataset
 **ModelNet10** was the chosen dataset for this case study. This stems from different factors, the smaller size of the dataset compared to ModelNet40, which allows for faster training and evaluation that is sufficient for the purpose of this project. The dataset itself has 4,899 CAD objects saved in [Object File Format](https://segeval.cs.princeton.edu/public/off_format.html) which stores information about the faces, vertices, and edges of the object. Out of the box, the dataset has two splits; 3,991 for training and 908 testing. As shown in the figure on the left below, the splits are uniform per class, therefore, I resplit the data into three splits 80/5/15 for training/validation/testing (see the Figure 1, right). The stratified splitting was done to ensure that each class is represented in roughly the same proportion across the training, validation, and test sets, which helps make model training and evaluation more balanced and reliable. The dataset stistics per class before and after respliting are shown in Figures 2 and 3 respectively.
 
-[//]: # (<figure>)
+<figure>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem; width: 100%; align-items: flex-start;">
+    <a
+      href="/images/3d_classification_DGCNN/class_count_2_splits.svg"
+      class="figure-link"
+      style="width: 100%; min-width: 0; max-width: none;"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/class_count_2_splits.svg"
+        alt="Class count using the official ModelNet10 train-test split"
+        style="width: 100%; height: auto; max-width: none;"
+      />
+    </a>
+    <a
+      href="/images/3d_classification_DGCNN/class_count_3_splits.svg"
+      class="figure-link"
+      style="width: 100%; min-width: 0; max-width: none;"
+    >
+      <img
+        src="/images/3d_classification_DGCNN/class_count_3_splits.svg"
+        alt="Class count after resplitting the ModelNet10 dataset"
+        style="width: 100%; height: auto; max-width: none;"
+      />
+    </a>
+  </div>
 
-[//]: # (  <div style="display: grid; grid-template-columns: repeat&#40;auto-fit, minmax&#40;min&#40;100%, 280px&#41;, 1fr&#41;&#41;; gap: 1rem; width: 100%; align-items: flex-start;">)
-
-[//]: # (    <a)
-
-[//]: # (      href="/images/3d_classification_DGCNN/class_count_2_splits.svg")
-
-[//]: # (      class="figure-link")
-
-[//]: # (      style="width: 100%; min-width: 0; max-width: none;")
-
-[//]: # (    >)
-
-[//]: # (      <img)
-
-[//]: # (        src="/images/3d_classification_DGCNN/class_count_2_splits.svg")
-
-[//]: # (        alt="Class count using the official ModelNet10 train-test split")
-
-[//]: # (        style="width: 100%; height: auto; max-width: none;")
-
-[//]: # (      />)
-
-[//]: # (    </a>)
-
-[//]: # (    <a)
-
-[//]: # (      href="/images/3d_classification_DGCNN/class_count_3_splits.svg")
-
-[//]: # (      class="figure-link")
-
-[//]: # (      style="width: 100%; min-width: 0; max-width: none;")
-
-[//]: # (    >)
-
-[//]: # (      <img)
-
-[//]: # (        src="/images/3d_classification_DGCNN/class_count_3_splits.svg")
-
-[//]: # (        alt="Class count after resplitting the ModelNet10 dataset")
-
-[//]: # (        style="width: 100%; height: auto; max-width: none;")
-
-[//]: # (      />)
-
-[//]: # (    </a>)
-
-[//]: # (  </div>)
-
-[//]: # ()
-[//]: # (  <figcaption>)
-
-[//]: # (    Figure 1: Class balance in ModelNet10: official split &#40;left&#41; and resplit dataset &#40;right&#41;.)
-
-[//]: # (  </figcaption>)
-
-[//]: # (</figure>)
+  <figcaption>
+    Figure 1: Class balance in ModelNet10: official split (left) and resplit dataset (right).
+  </figcaption>
+</figure>
 
 The figures below show the distribution of each split for each class is for the veritices and faces for the shapes in the dataset. As we can see, they are quite similar for all splits, which mean that we can move to the next step and preprocess the data before developing the model. It is worth mentioning that if the distributions of the faces counts in a single class were significantly different, then it would be nessary to look into that more deeply (e.g. try to reshuffle the data such that each split has similar distribution).
 
-[//]: # (<figure>)
-
-[//]: # (  <a href="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" class="figure-link">)
-
-[//]: # (    <img src="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" alt="Classes statistics" />)
-
-[//]: # (  </a>)
-
-[//]: # (  <figcaption>Figure 2: Per class and per split distribution of the dataset.</figcaption>)
-
-[//]: # (</figure>)
+<figure>
+  <a href="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" class="figure-link">
+    <img src="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" alt="Classes statistics" />
+  </a>
+  <figcaption>Figure 2: Per class and per split distribution of the dataset.</figcaption>
+</figure>
 
 ### Data Preprocessing and Augmentation
 Before passing the data to the model, points were sampled from the mesh faces, and each shape was normalised to fit inside a unit sphere centered at the origin. The shapes were augmented with rotation around the z-axis (n.b. rotations around other axes are possible, but will put the shapes at an awkward orientation that are unlikely to happen in the real world). Additionally, random uniform, symmetric, jitter noise was added to the vertices in the point cloud. Although additional augmentations are possible, such as random scaling or translation, this case study continue to follow the methods of augmenting the dataset to the literature being reproduced here.
@@ -352,22 +303,17 @@ The table below shows the classification performance on the ModelNet10 test set 
 
 Figure 5 compares the overall test accuracy of the four configurations. The 512-point model with $k=10$ achieves the highest accuracy of $0.96$, followed by the 1024-point model with $k=20$ at $0.95$. The baseline achieves an accuracy of $0.92$, while the 2048-point model with $k=20$ achieves the lowest accuracy of $0.91$. These results show that increasing the number of input points does not necessarily improve classification performance. 
 
-[//]: # (<figure style="margin: 0; text-align: center;">)
-
-[//]: # (  <a href="/images/3d_classification_DGCNN/overall_accuracy.png" class="figure-link">)
-
-[//]: # (    <img src="/images/3d_classification_DGCNN/overall_accuracy.png" alt="Overall test accuracy across DGCNN configurations" style="width: 85%; height: auto;" />)
-
-[//]: # (  </a>)
-
-[//]: # (  <figcaption style="margin-top: 10px;"><strong>Figure 5:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>)
-
-[//]: # (</figure>)
+<figure style="margin: 0; text-align: center;">
+  <a href="/images/3d_classification_DGCNN/experiment_comparison_accuracy.png" class="figure-link">
+    <img src="/images/3d_classification_DGCNN/experiment_comparison_accuracy.png" alt="Overall test accuracy across DGCNN configurations" style="width: 85%; height: auto;" />
+  </a>
+  <figcaption style="margin-top: 10px;"><strong>Figure 5:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
+</figure>
 
 Figure 6 provides a class-level comparison of precision, recall, and F1-score. The 512-point model with $k=10$ generally achieves the most consistent performance across the ten classes, with particularly strong results for Bathtub, Bed, Chair, Monitor, Sofa, and Toilet. The largest differences between configurations appear for the more challenging classes, particularly Desk, Dresser, and Night Stand. For example, the 2048-point model achieves a recall of $0.66$ for Desk and a precision of $0.66$ for Dresser. This suggests that the differences in overall performance are largely driven by a small number of difficult classes rather than by a uniform change across all classes.
 <figure style="margin: 0; text-align: center;">
-  <a href="/images/3d_classification_DGCNN/per_class_metrics.png" class="figure-link">
-    <img src="/images/3d_classification_DGCNN/per_class_metrics.png" alt="Per-class precision, recall, and F1-score across DGCNN configurations" style="width: 100%; height: auto;" />
+  <a href="/images/3d_classification_DGCNN/experiment_comparison_metrics.png" class="figure-link">
+    <img src="/images/3d_classification_DGCNN/experiment_comparison_metrics.png" alt="Per-class precision, recall, and F1-score across DGCNN configurations" style="width: 100%; height: auto;" />
   </a>
   <figcaption style="margin-top: 10px;"><strong>Figure 6:</strong> Per-class precision, recall, and F1-score for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
 </figure>
@@ -376,43 +322,25 @@ Figure 6 provides a class-level comparison of precision, recall, and F1-score. T
 
 Figure X below shows that all models struggled with `Night Stand` objects, frequently confusing them with `Dresser`. A similar pattern is observed for the `Desk` class, where some objects are misclassified as `Table`. The consistency of these errors across different model configurations suggests an inherent challenge in distinguishing these classes within the dataset, which I investigate further using t-SNE analysis below.
 
-[//]: # (<figure style="margin: 0; text-align: center;">)
-
-[//]: # (  <div style="display: grid; grid-template-columns: repeat&#40;auto-fit, minmax&#40;min&#40;100%, 280px&#41;, 1fr&#41;&#41;; gap: 12px;">)
-
-[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" class="figure-link">)
-
-[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" alt="Confusion matrix for the baseline DGCNN experiment" style="width: 100%; height: auto;" />)
-
-[//]: # (    </a>)
-
-[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_512.png" class="figure-link">)
-
-[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_512.png" alt="Confusion matrix for the DGCNN experiment with 512 points" style="width: 100%; height: auto;" />)
-
-[//]: # (    </a>)
-
-[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_1024.png" class="figure-link">)
-
-[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_1024.png" alt="Confusion matrix for the DGCNN experiment with 1024 points" style="width: 100%; height: auto;" />)
-
-[//]: # (    </a>)
-
-[//]: # (    <a href="/images/3d_classification_DGCNN/confusion_matrix_2048.png" class="figure-link">)
-
-[//]: # (      <img src="/images/3d_classification_DGCNN/confusion_matrix_2048.png" alt="Confusion matrix for the DGCNN experiment with 2048 points" style="width: 100%; height: auto;" />)
-
-[//]: # (    </a>)
-
-[//]: # (  </div>)
-
-[//]: # (  <figcaption style="margin-top: 10px;">)
-
-[//]: # (    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model &#40;top left&#41; and experiments using 512 &#40;top right&#41;, 1024 &#40;bottom left&#41;, and 2048 &#40;bottom right&#41; points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.)
-
-[//]: # (  </figcaption>)
-
-[//]: # (</figure>)
+<figure style="margin: 0; text-align: center;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px;">
+    <a href="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" class="figure-link">
+      <img src="/images/3d_classification_DGCNN/confusion_matrix_baseline.png" alt="Confusion matrix for the baseline DGCNN experiment" style="width: 100%; height: auto;" />
+    </a>
+    <a href="/images/3d_classification_DGCNN/confusion_matrix_512.png" class="figure-link">
+      <img src="/images/3d_classification_DGCNN/confusion_matrix_512.png" alt="Confusion matrix for the DGCNN experiment with 512 points" style="width: 100%; height: auto;" />
+    </a>
+    <a href="/images/3d_classification_DGCNN/confusion_matrix_1024.png" class="figure-link">
+      <img src="/images/3d_classification_DGCNN/confusion_matrix_1024.png" alt="Confusion matrix for the DGCNN experiment with 1024 points" style="width: 100%; height: auto;" />
+    </a>
+    <a href="/images/3d_classification_DGCNN/confusion_matrix_2048.png" class="figure-link">
+      <img src="/images/3d_classification_DGCNN/confusion_matrix_2048.png" alt="Confusion matrix for the DGCNN experiment with 2048 points" style="width: 100%; height: auto;" />
+    </a>
+  </div>
+  <figcaption style="margin-top: 10px;">
+    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.
+  </figcaption>
+</figure>
 
 ### t-SNE
 
