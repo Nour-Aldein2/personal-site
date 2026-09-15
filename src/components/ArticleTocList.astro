@@ -1,0 +1,35 @@
+---
+import type { TocItem } from "../lib/toc";
+
+interface Props {
+  items: TocItem[];
+  prefix?: string;
+}
+
+const { items, prefix = "" } = Astro.props;
+---
+
+<ol class="article-toc__list" role="list">
+  {items.map((item, index) => {
+    const number = `${prefix}${index + 1}`;
+
+    return (
+      <li class={`article-toc__item article-toc__item--depth-${item.depth}`}>
+        <a class="article-toc__link" href={`#${item.slug}`}>
+          <span class="article-toc__number" aria-hidden="true">
+            {prefix ? number : `${number}.`}
+          </span>
+
+          <span>{item.text}</span>
+        </a>
+
+        {item.children.length > 0 && (
+          <Astro.self
+            items={item.children}
+            prefix={`${number}.`}
+          />
+        )}
+      </li>
+    );
+  })}
+</ol>
