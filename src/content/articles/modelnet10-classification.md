@@ -1,6 +1,6 @@
 ---
-title: "3D Objects Classification"
-description: "A custom implementation of DGCNN using EdgeConv from PyTorch Geometric to classify ModelNet10 and understand the capabilities of EdgeConv and DGCNN."
+title: "On 3D Objects Classification with DGCNN"
+description: "This case study explores `EdgeConv` and `DGCNN` to build an intuitive understanding of their working principles and implementation. It uses the ModelNet10 dataset for benchmarking and examines the mathematics behind the technique. The article concludes with a reflection on the method’s capabilities and limitations, as well as some potential applications."
 slug: "3d-classification-dgcnn"
 publishDate: 2026-09-07
 updatedDate: 2026-09-07
