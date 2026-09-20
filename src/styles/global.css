@@ -149,3 +149,30 @@ pre code { padding: 0; background: none; }
   .page-shell { padding-bottom: 0; }
   a { overflow-wrap: anywhere; }
 }
+
+
+.article-content table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  background: var(--surface);
+  color: var(--article-copy);
+}
+
+.article-content th, .article-content td {
+  border: 1px solid rgb(var(--accent-rgb) / 0.45);
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+}
+
+.article-content th {
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .article-content th, .article-content td {
+    padding: 0.5rem;
+  }
+}
