@@ -5,6 +5,7 @@ import ArticleToc from "../components/ArticleToc.astro";
 import BaseLayout from "./BaseLayout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { formatDate } from "../lib/articles";
+import "katex/dist/katex.min.css";
 interface Props {
   article: CollectionEntry<"articles">; headings: {depth:number;slug:string;text:string}[];
   readingTime:string; related: CollectionEntry<"articles">[];

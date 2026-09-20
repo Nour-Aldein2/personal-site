@@ -1,6 +1,6 @@
 ---
-title: "On 3D Objects Classification with DGCNN"
-description: "This case study explores `EdgeConv` and `DGCNN` to build an intuitive understanding of their working principles and implementation. It uses the ModelNet10 dataset for benchmarking and examines the mathematics behind the technique. The article concludes with a reflection on the method’s capabilities and limitations, as well as some potential applications."
+title: "On Dynamic Graph and Edge Convolution Operations"
+description: "This case study explores `EdgeConv` and `DGCNN` to build an intuitive understanding of their working principles and implementation. It does so by using the ModelNet10 dataset for benchmarking on a 3D classification task and examines the mathematics behind the techniques. The article concludes with a reflection on the method’s capabilities and limitations, as well as some potential applications in cosmology and the arts."
 slug: "3d-classification-dgcnn"
 publishDate: 2026-09-07
 updatedDate: 2026-09-07
@@ -8,7 +8,7 @@ templateType: "case-study"
 tags:
   - 3D
   - GNN
-  - PointNet
+  - EdgeConv
   - Classification
 featured: true
 draft: false
@@ -36,12 +36,12 @@ table {
 </style>
 
 ## Introduction
-This article aims to review and reflect on `EdgeConv` operation and **DGCNN** to develop an understanding of the method and when is it suitable. In fact, while working on the new architecture `TopoLineArt` (to be published) I started working on reproducing many GNN operations. **DGCNN** is an interesting method because it eliminates the need to figure out the relationships between nodes while preparing a graph dataset. Instead, it is sufficient to start with kNN graph, and then the model will learn how nodes are connected while it's learning the task (in the case of Wang et al. (2019), the task is classification).
+This article aims to review and reflect on the `EdgeConv` operation and **DGCNN** to develop an understanding of the method and when it is suitable. In fact, while working on the new `TopoLineArt` architecture (to be published), I began reproducing many GNN operations. **DGCNN** is an interesting method because it eliminates the need to figure out the relationships between nodes while preparing a graph dataset. Instead, it is sufficient to start with a kNN graph, and the model will then learn how nodes are connected while learning the task (in the case of Wang et al. (2019), the tasks are classification and segmentation).
 
-This case study aims to reviewing this method, and reimplementing DGCNN using PyTorch Geometric `EdgeCon` to classify the 3D objects in **ModelNet10** dataset. In particular, this article aims to reflect on the method and its applicability, while walking throw and analysing the task, and model's performance.
+This case study presents a review of `EdgeConv` and DGCNN (Wang et al., 2020) and discusses my attempt to reimplement DGCNN using PyTorch Geometric's `EdgeConv` operation to classify the 3D objects in the **ModelNet10** dataset. In particular, this article aims to reflect on the method and its applicability while walking through and analysing the task and the model's performance.
 
 ## Dataset
-**ModelNet10** was the chosen dataset for this case study. This stems from different factors, the smaller size of the dataset compared to ModelNet40, which allows for faster training and evaluation that is sufficient for the purpose of this project. The dataset itself has 4,899 CAD objects saved in [Object File Format](https://segeval.cs.princeton.edu/public/off_format.html) which stores information about the faces, vertices, and edges of the object. Out of the box, the dataset has two splits; 3,991 for training and 908 testing. As shown in the figure on the left below, the splits are uniform per class, therefore, I resplit the data into three splits 80/5/15 for training/validation/testing (see the Figure 1, right). The stratified splitting was done to ensure that each class is represented in roughly the same proportion across the training, validation, and test sets, which helps make model training and evaluation more balanced and reliable. The dataset stistics per class before and after respliting are shown in Figures 2 and 3 respectively.
+**ModelNet10** was the chosen dataset for this case study. This choice was motivated by several factors, including the smaller size of the dataset compared with ModelNet40 (the dataset used in Wang et al. (2020)). The smaller dataset allows for faster training and evaluation and is sufficient for the purposes of this case study. The dataset itself has 4,899 CAD objects saved in [Object File Format](https://segeval.cs.princeton.edu/public/off_format.html), which stores information about the faces, vertices, and edges of each object. Out of the box, the dataset has two splits: 3,991 objects for training and 908 for testing. Since the dataset is not split uniformly across classes (Figure 1, left), I resplit the data into training, validation, and test sets using an 80/5/15 ratio (Figure 1, right). Stratified splitting was used to ensure that each class is represented in the same proportion across the training, validation, and test splits, which helps make model training and evaluation more balanced and reliable. The dataset statistics per class before and after resplitting are shown in Figures 2 and 3, respectively.
 
 <figure>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem; width: 100%; align-items: flex-start;">
@@ -74,32 +74,37 @@ This case study aims to reviewing this method, and reimplementing DGCNN using Py
   </figcaption>
 </figure>
 
-The figures below show the distribution of each split for each class is for the veritices and faces for the shapes in the dataset. As we can see, they are quite similar for all splits, which mean that we can move to the next step and preprocess the data before developing the model. It is worth mentioning that if the distributions of the faces counts in a single class were significantly different, then it would be nessary to look into that more deeply (e.g. try to reshuffle the data such that each split has similar distribution).
+The figures below show the distributions of vertex and face counts for each class across the dataset splits. As we can see, these distributions are quite similar across all splits, which means that we can move to the next step and preprocess the data before developing the model. It is worth mentioning that if the distributions of face counts within a single class differed significantly between splits, it would be necessary to investigate further (e.g. by reshuffling the data so that each split has a similar distribution).
 
 <figure>
   <a href="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" class="figure-link">
-    <img src="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" alt="Classes statistics" />
+    <img src="/images/3d_classification_DGCNN/mesh_statistics_2_splits.svg" alt="Class statistics" />
   </a>
-  <figcaption>Figure 2: Per class and per split distribution of the dataset.</figcaption>
+  <figcaption>Figure 2: Per-class and per-split distributions of the dataset **before** resplitting.</figcaption>
+</figure>
+
+<figure>
+  <a href="/images/3d_classification_DGCNN/mesh_statistics_3_splits.svg" class="figure-link">
+    <img src="/images/3d_classification_DGCNN/mesh_statistics_3_splits.svg" alt="Class statistics" />
+  </a>
+  <figcaption>Figure 3: Per-class and per-split distributions of the dataset **after** resplitting.</figcaption>
 </figure>
 
 ### Data Preprocessing and Augmentation
-Before passing the data to the model, points were sampled from the mesh faces, and each shape was normalised to fit inside a unit sphere centered at the origin. The shapes were augmented with rotation around the z-axis (n.b. rotations around other axes are possible, but will put the shapes at an awkward orientation that are unlikely to happen in the real world). Additionally, random uniform, symmetric, jitter noise was added to the vertices in the point cloud. Although additional augmentations are possible, such as random scaling or translation, this case study continue to follow the methods of augmenting the dataset to the literature being reproduced here.
+Before the data were passed to the model, points were sampled from the mesh faces, and each shape was normalised to fit inside a unit sphere centred at the origin. The shapes were augmented by rotation around the z-axis (note that rotations around other axes are possible but would place the shapes in awkward orientations that are unlikely to occur in the real world). Additionally, random, uniform, symmetric jitter noise was added to the vertices in the point cloud. Although additional augmentations are possible, such as random scaling or translation, this case study continues to follow the dataset augmentation methods described in the literature being reproduced here.
 
 
 ## Method
-Graph data, unlike image data, is unstructured. This lack of structure allows to express different sorts of relations between the nodes in the graph. This allowed for interesting developments in the field of AI for learning in graphs. These methods have proven to be very powerful when the data is represented correctly as graphs.
-
-The success of these methods has motivated this case study (and many others I am working on, including my own research). Once again, the goal of reproducing Wang et al. (2019) is not only to reimplement their code, but to reflect on the method itself, and on its results.
+Graphs, unlike images, have an irregular structure, allowing them to represent arbitrary relationships between nodes. This has allowed for interesting developments in AI for learning on graphs. These methods have proven to be very powerful when data are appropriately represented as graphs. The success of these methods has motivated this case study, along with many other case studies and research projects I am working on.
 
 ### Baseline: Simplified PointNet
-When experimenting with AI (or in any experiment in general), it is important to have a baseline that is good enough to compare your model (in this case, DGCNN) against; otherwise, how can you tell if your model is actually better? I find that, in the early stages of academic research and in case studies like this one, it is sufficient to implement a simplified version of existing literature. If you later find that comparing existing literature with your results is highly important, then you can implement the full version of the existing literature once you have a first version of your model working.
+When experimenting with AI (or conducting any experiment in general), it is important to have a baseline that is good enough to compare your model against; otherwise, how can you tell if your model is actually better? I find that, in the early stages of academic research and in case studies like this one, it is sufficient to implement a simplified version of a model from the existing literature. If you later find that comparing your results with those in the existing literature is particularly important, you can implement the full version of the published model once you have a first version of your own model working.
 
-This baseline has three 1D convolutional layers, each activated by ReLU. The features produced by the final convolution are then aggregated across all points using max pooling. This produced a global feature vector which is then passed through a fully connected layer, followed by a final classification layer that outputs the logits. Each shape passed to the model had 2048 points and jitter noise with $\sigma = 0.02$. This model was trained using `Adam` optimiser and a learning rate of $10^{-3}$ for 1000 epochs and early stopping patience for 50 epochs to prevent overfitting.
+The baseline has three 1D convolutional layers, each with a ReLU activation. The features produced by the final convolution are then aggregated across all points using max pooling. This produces a global feature vector, which is then passed through a fully connected layer, followed by a final classification layer that outputs the logits. Each shape passed to the model had 2048 points and was augmented with jitter noise ($\sigma = 0.02$). The model was trained using the `Adam` optimiser with a learning rate of $10^{-3}$ for up to 1000 epochs, with an early-stopping patience of 50 epochs.
 
 ### DGCNN with EdgeConv and PyTorch Geometric
 
-Wang et al. (2019) use a graph representation for each shape's point cloud. Graphs are unordered data structures that are made up of nodes $\mathcal{N}$ and edges $\mathcal{E}$. The edges model the relationships between nodes, and the graph structure can be expressed as an adjacency matrix. Any function applied to graph data must have one of two important properties:
+Wang et al. (2019) used a graph representation for each shape's point cloud. Graphs $\mathcal{G}$ are unordered data structures that are made up of nodes $\mathcal{N}$ and edges $\mathcal{E}$. The edges model the relationships between nodes, and the graph structure can be expressed as an adjacency matrix. Any function applied to graph data must have one of two important properties:
 
 1. **Permutation Invariance (for graph-level outputs, e.g. graph classification)**: The function does not care about the order of the nodes (i.e. the rows and columns in the adjacency matrix):
 $$
@@ -107,26 +112,26 @@ f(PX, PAP^T) = f(X, A)
 $$
 where $f$ is any function (e.g. a neural network), $A$ is the adjacency matrix, and $P$ is any permutation matrix.
 
-2. **Permutation Equivariance (for node-level outputs, e.g. node classification)**: If you shuffle the input of a function in some way, its output will be shuffled in the same way; in other words, reordering the nodes causes the corresponding node-level outputs to be reordered in the same way:
+2. **Permutation Equivariance (for node-level outputs, e.g. node classification)**: If you shuffle the input to a function in some way, its output will be shuffled in the same way; in other words, reordering the nodes causes the corresponding node-level outputs to be reordered in the same way:
 $$
 F(PX, PAP^T) = P F(X, A)
 $$
 <figure>
   <a href="/images/3d_classification_DGCNN/permutation_invariance_equivariance.svg" class="figure-link">
-    <img src="/images/3d_classification_DGCNN/permutation_invariance_equivariance.svg" alt="Classes statistics" />
+    <img src="/images/3d_classification_DGCNN/permutation_invariance_equivariance.svg" alt="Class statistics" />
   </a>
-  <figcaption>Figure 2: Per class and per split distribution of the dataset.</figcaption>
+  <figcaption>Figure 4: Permutation invariance and permutation equivariance.</figcaption>
 </figure>
 
-For more details about learning on graphs, feel free to refer to Hamilton (2020) or Bronstein et al. (2021). In their work, Wang et al. (2019) use the points in the point cloud as nodes, while the edges are selected to connect a node to its $k$ nearest neighbours, which allows them to use the message passing algorithm to aggregate information between nodes to update edge features: $\mathbf{e}_{ij} = h_\Theta(\mathbf{x}_i, \mathbf{x}_j)$, where $h_\Theta: \mathbb{R}^F \times \mathbb{R}^F \rightarrow \mathbb{R}^F$, with $F$ being the feature space size, $h$ being a non-linear function, and $\Theta$ being learnable parameters.
+For more details about learning on graphs, feel free to refer to Hamilton (2020) or Bronstein et al. (2021). In their work, Wang et al. (2019) used points as nodes and connected each node to its $k$ nearest neighbours. Edge features are computed as $\mathbf{e}_{ij} = h_\Theta(\mathbf{x}_i, \mathbf{x}_j)$, where $h_\Theta: \mathbb{R}^F \times \mathbb{R}^F \rightarrow \mathbb{R}^F$. Here, $F$ is the feature-space dimension, $h$ is a non-linear function, and $\Theta$ denotes its learnable parameters.
 
-The operation to update node features is called `EdgeConv`, which is defined by applying the aggregation operation $\square$ on the edge features $\mathbf{e}_{ij}$ associated with all edges linked to a node:
+The operation used to update node features is called `EdgeConv`, which is defined by applying the aggregation operation $\square$ to the edge features $\mathbf{e}_{ij}$ associated with all edges linked to a node:
 $$
 \mathbf{x^\prime_i} = \square_{j:(i, j) \in \mathcal{E}} \mathbf{e}_{ij}
 $$
-Since $\square$ is a symmetric aggregation function (e.g. $\max$), the order in which the neighbouring edge features $\mathbf{e}_{ij}$ are presented does not affect the updated feature $\mathbf{x}'_i$. Therefore, EdgeConv is permutation invariant to the ordering of a node's neighbours, while the EdgeConv layer as a whole is permutation equivariant with respect to the ordering of the input points. The choice of $h$ and $\square$ is very important, and in the paper the authors go over multiple choices and explain the differences between them:
+Since $\square$ is a symmetric aggregation function (e.g. $\max$), the order in which the neighbouring edge features $\mathbf{e}_{ij}$ are presented does not affect the updated feature $\mathbf{x}'_i$. Therefore, EdgeConv is permutation invariant to the ordering of a node's neighbours, while the EdgeConv layer as a whole is permutation equivariant with respect to the ordering of the input points. The choice of $h$ and $\square$ is very important, and, in the paper, the authors go over multiple choices and explain the differences between them:
 
-**Table 1.** Comparison to existing methods. The per-point weight $w_i$ in [Atzmon et al. 2018] effectively is computed in the first layer and could be carried onward as an extra feature; we omit it for simplicity (Source: Wang et al. (2019)).
+**Table 1.** Comparison with existing methods. The per-point weight $w_i$ in [Atzmon et al., 2018] is effectively computed in the first layer and could be carried forward as an extra feature; we omit it for simplicity (Source: Wang et al. (2019)).
 
 | Method     | Aggregation | Edge Function                                                                                                                   | Learnable parameters |
 |------------|------------:|---------------------------------------------------------------------------------------------------------------------------------|---------------------:|
@@ -139,21 +144,21 @@ In EdgeConv, Wang et al.'s (2019) choice was:
 $$
 h_\Theta (\mathbf{x}_i, \mathbf{x}_j) = \bar{h}_\Theta (\mathbf{x}_i, \mathbf{x}_j - \mathbf{x}_i)
 $$
-where $\mathbf{x}_i$ provides the global shape structure of a patch centered at $\mathbf{x}_i$, and $\mathbf{x}_j - \mathbf{x}_i$ captures the local neighbourhood information (notice how PointNet and other methods are special cases of the EdgeConv operation). 
+where $\mathbf{x}_i$ provides the global shape structure of a patch centred at $\mathbf{x}_i$, and $\mathbf{x}_j - \mathbf{x}_i$ captures the local neighbourhood information (notice how PointNet and other methods are special cases of the EdgeConv operation).
 
-Based on their experiments, the authors suggest that reconstructing the graph is essential for improved results; **this is the dynamic part of their convolution operation**. In particular, they do not reconstruct the entire graph; they only rewire the nodes by recomputing the adjacency matrix each time the nodes get updated (i.e. "recompute the graph using nearest neighbors in the feature space produced by each layer"). This was done by:
-1. computing a pairwise distance matrix in the feature space,
-2. then taking the closest $k$ points to each point.
+Based on their experiments, the authors suggest that reconstructing the graph is essential for improved results; **this is the dynamic part of their convolution operation**. In particular, they do not reconstruct the entire graph; they only rewire the nodes by recomputing the adjacency matrix each time the nodes are updated (i.e. "recompute the graph using nearest neighbors in the feature space produced by each layer"). This involved two steps:
+1. Computing a pairwise distance matrix in the feature space.
+2. Taking the closest $k$ points to each point.
 
-It is worth highlighting that this entire operation is *permutation* and *partial translation* invariant. In this way, the model not only learns how to extract local geometric features and how to group points in a point cloud; therefore, distances in deeper layers carry semantic information over long distances in the original embedding.
+It is worth highlighting that this entire operation is *permutation invariant* and *partially translation invariant*. In this way, the model learns not only how to extract local geometric features but also how to group points in a point cloud; therefore, distances in deeper layers carry semantic information over long distances in the original embedding.
 
 In this case study, we conduct three experiments:
 
-1. **Exp. 1**: 512 nodes, with 10 kNN
-2. **Exp. 2**: 1024 nodes, with 20 kNN
-3. **Exp. 3**: 2048 nodes, with 20 kNN
+1. **Exp. 1**: 512 nodes, with $k=10$
+2. **Exp. 2**: 1024 nodes, with $k=20$
+3. **Exp. 3**: 2048 nodes, with $k=20$
 
-The code used for these experiments is available in this [GitHub repository](https://github.com/Nour-Aldein2/Point-Cloud-Classification/tree/main/DGCNN). All DGCNN models were trained with jitter noise of $\sigma=0.02$ and optimized using SGD with a momentum of $0.9$ and weight decay of $10^{-4}$. The learning rate was decreased from $0.01$ to $0.0001$ over the course of training. Each model was trained for up to 250 epochs, with early stopping applied using a patience of 50 epochs. The Leaky ReLU slope was set to $0.2$, the dropout rate to $0.5$, and the batch-normalization momentum to $0.1$. With the exception of early stopping, these settings closely follow those used by Wang et al. (2019). The training histories for these three experiments are shown below:
+The code used for these experiments is available in this [GitHub repository](https://github.com/Nour-Aldein2/Point-Cloud-Classification/tree/main/DGCNN). All DGCNN models were trained with jitter noise of $\sigma=0.02$ and optimised using SGD with a momentum of $0.9$ and weight decay of $10^{-4}$. The learning rate was decreased from $0.01$ to $0.0001$ over the course of training. Each model was trained for up to 250 epochs, with an early-stopping patience of 50 epochs. The Leaky ReLU slope was set to $0.2$, the dropout rate to $0.5$, and the batch-normalisation momentum to $0.1$. With the exception of early stopping, these settings closely follow those used by Wang et al. (2019). The training histories for these three experiments are shown below:
 <figure style="margin: 0; text-align: center;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); justify-content: center; align-items: flex-start; gap: 12px;">
     <a href="/images/3d_classification_DGCNN/exp_512_10_loss_accuracy.svg" class="figure-link" style="width: 100%;">
@@ -167,16 +172,18 @@ The code used for these experiments is available in this [GitHub repository](htt
     </a>
   </div>
   <figcaption style="margin-top: 10px;">
-    <strong>Figure 3:</strong> Training loss and accuracy curves for DGCNN experiments using 512 points with $k=10$ (left), 1024 points with $k=20$ (middle), and 2048 points with $k=20$ (right).
+    <strong>Figure 5:</strong> Training loss and accuracy curves for DGCNN experiments.
   </figcaption>
 </figure>
 
 ## Results and Analysis
-In the Baseline and DGCNN experiments, the models was evaluated on the same held-out test split. Here, the quantitative results are presented, followed by the qualitative results, finally the learned embeddings in the latent space are visualised using t-SNE.
+In the baseline and DGCNN experiments, the models were evaluated on the same held-out test split. The following sections present quantitative results, class-level errors, and t-SNE visualisations of the learned embeddings.
 
 ### Quantitative
 
-The table below shows the classification performance on the ModelNet10 test set (743 samples). The baseline model is compared against DGCNN models evaluated at three input resolutions (512 points with 10 edges, 1024 points with 20 edges, and 2048 points with 20 edges). Mean class accuracy, precision, and F1-score are macro-averaged over the 10 classes. The Exp. 1 with 512-10 point-edge configuration achieves the best performance across all metrics. We also notice that the performance drops across all metrics as we increase the number of points, this alongside the results in Table 5 in Wang et al. (2019) suggest that selecting the number of nodes and edges/k neighbours plays a crucial role in DGCNN performance, and thus a hyperparameters sweep is needed before deciding the best model.
+The table below shows the classification performance on the ModelNet10 test set (743 samples). The baseline model is compared against DGCNN models evaluated with three input configurations: 512 points with 10 edges, 1024 points with 20 edges, and 2048 points with 20 edges. Mean class accuracy, precision, and F1-score are macro-averaged over the 10 classes. Exp. 1, with its 512-10 point-edge configuration, achieves the best performance across all metrics. We also notice that performance drops across all metrics as we increase the number of points; this, alongside the results in Table 5 of Wang et al. (2019), suggests that the choice of the number of nodes and edges/k neighbours plays a crucial role in DGCNN performance. Thus, a hyperparameter sweep is needed before deciding on the best model.
+
+**Table 2.** Quantitative results of all experiments.
 
 | Model                | Overall Accuracy | Mean Class Accuracy (Recall) | Precision | F1-score |
 |----------------------|------------------|------------------------------|-----------|----------|
@@ -186,26 +193,26 @@ The table below shows the classification performance on the ModelNet10 test set 
 | **Exp. 3: 2048, 20** | 0.91             | 0.90                         | 0.89      | 0.89     |
 
 
-Figure 5 compares the overall test accuracy of the four configurations. The 512-point model with $k=10$ achieves the highest accuracy of $0.96$, followed by the 1024-point model with $k=20$ at $0.95$. The baseline achieves an accuracy of $0.92$, while the 2048-point model with $k=20$ achieves the lowest accuracy of $0.91$. These results show that increasing the number of input points does not necessarily improve classification performance. 
+Figure 6 compares the overall test accuracy of the four configurations. The 512-point model with $k=10$ achieves the highest accuracy of $0.96$, followed by the 1024-point model with $k=20$ at $0.95$. The baseline achieves an accuracy of $0.92$, while the 2048-point model with $k=20$ achieves the lowest accuracy of $0.91$. These results show that increasing the number of input points does not necessarily improve classification performance.
 
 <figure style="margin: 0; text-align: center;">
   <a href="/images/3d_classification_DGCNN/experiment_comparison_accuracy.png" class="figure-link">
     <img src="/images/3d_classification_DGCNN/experiment_comparison_accuracy.png" alt="Overall test accuracy across DGCNN configurations" style="width: 85%; height: auto;" />
   </a>
-  <figcaption style="margin-top: 10px;"><strong>Figure 5:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
+  <figcaption style="margin-top: 10px;"><strong>Figure 6:</strong> Overall test accuracy for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
 </figure>
 
-Figure 6 provides a class-level comparison of precision, recall, and F1-score. The 512-point model with $k=10$ generally achieves the most consistent performance across the ten classes, with particularly strong results for Bathtub, Bed, Chair, Monitor, Sofa, and Toilet. The largest differences between configurations appear for the more challenging classes, particularly Desk, Dresser, and Night Stand. For example, the 2048-point model achieves a recall of $0.66$ for Desk and a precision of $0.66$ for Dresser. This suggests that the differences in overall performance are largely driven by a small number of difficult classes rather than by a uniform change across all classes.
+Figure 7 provides a class-level comparison of precision, recall, and F1-score. The 512-point model with $k=10$ generally achieves the most consistent performance across the ten classes, with particularly strong results for Bathtub, Bed, Chair, Monitor, Sofa, and Toilet. The largest differences between configurations appear for the more challenging classes, particularly Desk, Dresser, and Night Stand. For example, the 2048-point model achieves a recall of $0.66$ for Desk and a precision of $0.66$ for Dresser. This suggests that the differences in overall performance are largely driven by a small number of difficult classes rather than by a uniform change across all classes.
 <figure style="margin: 0; text-align: center;">
   <a href="/images/3d_classification_DGCNN/experiment_comparison_metrics.png" class="figure-link">
     <img src="/images/3d_classification_DGCNN/experiment_comparison_metrics.png" alt="Per-class precision, recall, and F1-score across DGCNN configurations" style="width: 100%; height: auto;" />
   </a>
-  <figcaption style="margin-top: 10px;"><strong>Figure 6:</strong> Per-class precision, recall, and F1-score for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
+  <figcaption style="margin-top: 10px;"><strong>Figure 7:</strong> Per-class precision, recall, and F1-score for the baseline and DGCNN models using 512 points with $k=10$, 1024 points with $k=20$, and 2048 points with $k=20$.</figcaption>
 </figure>
 
 ### Qualitative
 
-Figure X below shows that all models struggled with `Night Stand` objects, frequently confusing them with `Dresser`. A similar pattern is observed for the `Desk` class, where some objects are misclassified as `Table`. The consistency of these errors across different model configurations suggests an inherent challenge in distinguishing these classes within the dataset, which I investigate further using t-SNE analysis below.
+Figure 8 presents confusion matrices for the four experiments. It shows that all models struggled with `Night Stand` objects, frequently confusing them with `Dresser` objects. A similar pattern is observed for the `Desk` class, in which some objects are misclassified as `Table` objects. The consistency of these errors across different model configurations suggests an inherent challenge in distinguishing these classes within the dataset, which I investigate further using t-SNE analysis below.
 
 <figure style="margin: 0; text-align: center;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 12px;">
@@ -223,13 +230,13 @@ Figure X below shows that all models struggled with `Night Stand` objects, frequ
     </a>
   </div>
   <figcaption style="margin-top: 10px;">
-    <strong>Figure x:</strong> Normalized confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and color intensity indicate the recall for each true–predicted class pair.
+    <strong>Figure 8:</strong> Normalised confusion matrices for the baseline DGCNN model (top left) and experiments using 512 (top right), 1024 (bottom left), and 2048 (bottom right) points per point cloud. Bubble size and colour intensity indicate the recall for each true–predicted class pair.
   </figcaption>
 </figure>
 
 ### t-SNE
 
-t-SNE (t-distributed Stochastic Neighbor Embedding) is a nonlinear dimensionality-reduction technique commonly used to visualise high-dimensional data in two dimensions. It aims to preserve local neighbourhood relationships, such that samples that are similar in the original feature space tend to appear close together in the resulting projection. In this case study, t-SNE is used to visualise the learned feature representations produced by the baseline and DGCNN models for the ModelNet10 test set. This allows us to qualitatively examine how well the models separate the different object classes in their latent spaces and to identify regions where classes overlap. In particular, the visualisation can help explain some of the confusion observed between similar classes, such as `Desk`, `Dresser`, `Night Stand`, and `Table`, by showing whether their learned representations occupy nearby or overlapping regions. Because t-SNE is primarily a visualisation method, the absolute distances and global arrangement of clusters should not be interpreted quantitatively; the focus is instead on the local structure and degree of class separation.
+t-SNE (t-distributed stochastic neighbour embedding) is a non-linear dimensionality-reduction technique commonly used to visualise high-dimensional data in two dimensions. It aims to preserve local neighbourhood relationships, such that samples that are similar in the original feature space tend to appear close together in the resulting projection. In this case study, t-SNE is used to visualise the learned feature representations produced by the baseline and DGCNN models for the ModelNet10 test set. This allows us to qualitatively examine how well the models separate the different object classes in their latent spaces and to identify regions where classes overlap. In particular, the visualisation can help explain some of the confusion observed between similar classes, such as `Desk`, `Dresser`, `Night Stand`, and `Table`, by showing whether their learned representations occupy nearby or overlapping regions (the reader is encouraged to use the interactive graphs, which can be accessed by clicking on the relevant figure panel). Because t-SNE is primarily a visualisation method, the absolute distances and global arrangement of clusters should not be interpreted quantitatively; the focus is instead on the local structure and degree of class separation.
 
 <figure>
   <div style="
@@ -288,29 +295,29 @@ t-SNE (t-distributed Stochastic Neighbor Embedding) is a nonlinear dimensionalit
     </a>
   </div>
   <figcaption>
-    Figure X: t-SNE projections of the learned feature spaces. Select a figure
-    to open the interactive visualization and inspect individual point clouds.
+    Figure 9: t-SNE projections of the learned feature spaces. Select a figure
+    to open the interactive visualisation and inspect individual point clouds.
   </figcaption>
 </figure>
 
 ## Conclusions and Limitations
 
-Working with point could data and reproducing this paper has been an interesting experience. Many lessons were learnd. The most important ones related to the nature of the update done by `EdgeConv` operation, and working with 3D data. Such point cloud reminds me of the stars in the sky, excpt for the fact that stars are often studied in 6D (i.e. phase space) rather than 3D. Still, the method presented in this paper present a unique opportunity to implempt and adapt this method to studing the nature of dark matter, similar to what was done in Ma et al. (2025). I argue that the use on `EdgeConv` and DGCNN might be a better option that using `GCN` operation. Previously I highlighted this point:
->It is worth highlighting that this entire operation is *permutation* and *partial translation* invariant. In this way, the model not only learns how to extract local geometric features and how to group points in a point cloud; therefore, distances in deeper layers carry semantic information over long distances in the original embedding.
+It has been an interesting experience to work with point cloud data and reproduce the work presented in this paper. Many lessons were learnt. The most important ones concerned the nature of the updates made by the `EdgeConv` operation and working with 3D data. Point clouds remind me of the stars in the sky, except that stars are often studied in 6D (i.e. phase space) rather than 3D. Still, there is a unique opportunity to implement and adapt the method presented in this paper to study the nature of dark matter, as in Ma et al. (2025). I argue that using `EdgeConv` and DGCNN might be a better option than using the `GCN` operation. Previously, I highlighted this point:
+> It is worth highlighting that this entire operation is *permutation invariant* and *partially translation invariant*. In this way, the model learns not only how to extract local geometric features but also how to group points in a point cloud; therefore, distances in deeper layers carry semantic information over long distances in the original embedding.
 
-I believe such a technique could have important applications in astrophysics and cosmology, particularly if it were paired with a physics objective (e.g. a loss function). It could help characterize the relationships between stars in a stellar stream (e.g. [GD-1](https://en.wikipedia.org/wiki/GD-1)) in a high-dimensional feature space and identify perturbations in the stream. This could, in turn, help determine whether observed structures such as gaps and spurs are consistent with interactions with dark-matter subhalos.
+I believe such a technique could have important applications in astrophysics and cosmology, particularly if it were paired with a physics objective (e.g. a loss function). It could help characterise the relationships between stars in a stellar stream (e.g. [GD-1](https://en.wikipedia.org/wiki/GD-1)) in a high-dimensional feature space and identify perturbations in the stream. This could, in turn, help determine whether observed structures such as gaps and spurs are consistent with interactions with dark-matter subhaloes.
 
-One limitiation of this work is that it is not turlly "dynamic". In fact, the only thing that is dynamic in this paper is the evolution of the connections between nodes, and the notion of a node "neighbour". A trully dynmic graph will allow for creation and anhilation of nodes and edges rather than having a fixed number of both (indeed DGCNN changes "who your neighbours are" not "how many neighbours you have"). Thus an intersting next step would be to look for a method that does allow for creating and anhliation of nodes and edges.
+One limitation of this work is that it is not truly "dynamic". In fact, the only dynamic aspects of this method are the evolution of the connections between nodes and the notion of a node's "neighbour". A truly dynamic graph would allow for the creation and annihilation of nodes and edges rather than having a fixed number of both (indeed, DGCNN changes "who your neighbours are", not "how many neighbours you have"). Thus, an interesting next step would be to look for a method that does allow for the creation and annihilation of nodes and edges.
 
-Another intersting application of this method is to use it to model the relationships between people and objects in a 2D or 3D scene. Such approach could be integrated into a genrative model to guide it on how to generate those images and their interactions. For example, it could be used to model and discover complex relationships between objects/people in a 3D scene, and the generative model could be conditioned to maintain those relationships when generating a next scene.
+Another interesting application of this method is to use it to model the relationships between people and objects in a 2D or 3D scene. Such an approach could be integrated into a generative model to guide it in generating those images and the interactions they depict. For example, it could be used to model and discover complex relationships between objects and people in a 3D scene, and the generative model could be conditioned to maintain those relationships when generating the next scene.
 
-Finally, (this is a far fitch idea), if true dynamicality in a convolution operation where nodes and edges are allowed to be born and anhilated, such model could be effective at studing the interaction of quarks inside a hadrons (i.e. baryons and mesons) or even quark-glone plasma. However, such study must be constrained by the physical laws and then tested thourghly since these physical laws might break at such extremas.
+Finally (this is a far-fetched idea), if a convolution operation is truly dynamic, allowing nodes and edges to be created and annihilated, a model using it could be effective for studying the interactions of quarks inside hadrons (i.e. baryons and mesons) or even in quark–gluon plasma. However, such a study must be constrained by physical laws and then tested thoroughly, since these laws might break down under such extreme conditions.
 
 ## References
 Bronstein, M.M., Bruna, J., Cohen, T. and Veličković, P., 2021. Geometric deep learning: Grids, groups, graphs, geodesics, and gauges. arXiv preprint arXiv:2104.13478.
 
-Hamilton, W.L., 2020. Graph Representation Learning. Synthesis Lectures on Artificial Intelligence and Machine Learning, 14(3), pp.1–159.
+Hamilton, W.L., 2020. Graph Representation Learning. Synthesis Lectures on Artificial Intelligence and Machine Learning, 14(3), pp. 1–159.
 
-Ma, P.X., Rogers, K.K., Li, T.S., Hložek, R., Webb, J.J., Huang, R. and Meunier, J., 2025. Toward Characterizing Dark Matter Subhalo Perturbations in Stellar Streams with Graph Neural Networks. The Astrophysical Journal, 987(1), p.96.
+Ma, P.X., Rogers, K.K., Li, T.S., Hložek, R., Webb, J.J., Huang, R. and Meunier, J., 2025. Toward Characterizing Dark Matter Subhalo Perturbations in Stellar Streams with Graph Neural Networks. The Astrophysical Journal, 987(1), p. 96.
 
-Wang, Y., Sun, Y., Liu, Z., Sarma, S.E., Bronstein, M.M. and Solomon, J.M., 2019. Dynamic graph cnn for learning on point clouds. ACM Transactions on Graphics (tog), 38(5), pp.1-12.
+Wang, Y., Sun, Y., Liu, Z., Sarma, S.E., Bronstein, M.M. and Solomon, J.M., 2019. Dynamic graph CNN for learning on point clouds. ACM Transactions on Graphics (TOG), 38(5), pp. 1–12.
