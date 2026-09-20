@@ -92,7 +92,7 @@ test('the original article, publication records and legacy routes are retained',
   for (const name of ['public/cv.html','public/post_explain_BERT_LIME.html','src/pages/robots.txt.ts','src/pages/sitemap.xml.ts']) assert.ok(await exists(join(root,name)));
 });
 test('dependencies and original asset source are pinned, not fetched from a moving branch', async () => {
-  const pkg = JSON.parse(await text('package.json')); assert.equal(pkg.dependencies.astro, '6.2.1');
+  const pkg = JSON.parse(await text('package.json')); assert.equal(pkg.dependencies.astro, '7.3.3');
   const manifest = JSON.parse(await text('scripts/asset-manifest.json'));
   assert.match(manifest.revision, /^[a-f0-9]{40}$/); assert.ok(manifest.files.includes('public/Noor_CV.pdf'));
   assert.doesNotMatch(manifest.files.join('\n'), /\.(?:ttf|otf|woff2?)$/m);
